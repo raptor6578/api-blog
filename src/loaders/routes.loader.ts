@@ -4,6 +4,7 @@ import authRoute from '../routes/auth.route'
 import settingsRoute from '../routes/settings.route'
 import articlesRoutes from '../routes/articles.route'
 import commentsRoutes from '../routes/comments.route'
+import likesRoute from '../routes/likes.route'
 import tokenMiddleware from '../middlewares/token.middleware'
 
 function routesLoader(app: Express) {
@@ -13,6 +14,7 @@ function routesLoader(app: Express) {
   app.use('/api/settings', tokenMiddleware, settingsRoute())
   app.use('/api/articles', articlesRoutes())
   app.use('/api/comments', tokenMiddleware, commentsRoutes())
+  app.use('/api/likes', tokenMiddleware, likesRoute())
 
 }
 

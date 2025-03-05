@@ -3,7 +3,7 @@ import { UserSchema } from './user.model'
 import { LikeSchema } from './like.model'
 import mongoose, { Document } from 'mongoose'
 
-enum ContentType {
+enum CommentContentType {
   Article = 'Article'
 }
 
@@ -15,8 +15,8 @@ class Comment extends Document {
   @prop({ ref: () => UserSchema, required: true })
   public author!: Ref<UserSchema>
 
-  @prop({ enum: ContentType, required: true })
-  public contentType!: ContentType
+  @prop({ enum: CommentContentType, required: true })
+  public contentType!: CommentContentType
 
   @prop({ required: true, index: true, refPath: 'contentType' })
   public targetId!: string
@@ -36,4 +36,4 @@ class Comment extends Document {
 }
 
 const CommentModel = getModelForClass(Comment)
-export { CommentModel, ContentType, Comment as CommentSchema }
+export { CommentModel, CommentContentType, Comment as CommentSchema }

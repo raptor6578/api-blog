@@ -1,6 +1,8 @@
 import mongoose from 'mongoose'
 import { ArticleModel, ArticleSchema } from '../models/article.model'
 import commentRepository from '../repositories/comment.repository'
+import likeRepository from './like.repository'
+import { LikeContentType } from '../models/like.model'
 
 class ArticleRepository {
 
@@ -12,6 +14,19 @@ class ArticleRepository {
 
     const article = new ArticleModel({ title, content, author })
     await article.save()
+    return article
+  }
+
+  public async findBySlugAndDelete(
+    slug: string, 
+    author: mongoose.Types.ObjectId
+  ): Promise<ArticleSchema | null> {
+
+    const article = await ArticleModel.findOneAndDelete({ slug, author })
+    if (article) {
+      await commentRepository.deleteAllCommentsByTargetId(article._id, 'Article' as LikeContentType)
+      await likeRepository.deleteAllLikesByTargetId(article._id, 'Article' as LikeContentType)
+    }
     return article
   }
 
@@ -48,30 +63,45 @@ class ArticleRepository {
   public async addCommentId(
     idArticle: mongoose.Types.ObjectId, 
     idComment: mongoose.Types.ObjectId
-  ): Promise<boolean> {
-
-    const article = await ArticleModel.findByIdAndUpdate(idArticle, {new: true})
-    let status
-    if (article) { 
-      article.comments.push(idComment) 
-      article.save()
-      status = true
-    } else {
-      status = false
-    }
-    return status
-  }
-
-  public async findBySlugAndDelete(
-    slug: string, 
-    author: mongoose.Types.ObjectId
   ): Promise<ArticleSchema | null> {
 
-    const article = await ArticleModel.findOneAndDelete({ slug, author })
-    if (article) {
-      await commentRepository.deleteAllCommentsByTargetId(article._id)
-    }
-    return article
+    return await ArticleModel.findByIdAndUpdate(
+      idArticle,
+      { $addToSet: { comments: idComment }},
+      {new: true})
+  }
+
+  public async deleteCommentId(
+    idArticle: mongoose.Types.ObjectId, 
+    idComment: mongoose.Types.ObjectId
+  ): Promise<ArticleSchema | null> {
+
+    return await ArticleModel.findByIdAndUpdate(
+      idArticle,
+      { $pull: { comments: idComment }},
+      {new: true})
+  }
+
+  public async addLikeId(
+    idArticle: mongoose.Types.ObjectId, 
+    idLike: mongoose.Types.ObjectId
+  ): Promise<ArticleSchema | null> {
+
+    return await ArticleModel.findByIdAndUpdate(
+      idArticle,
+      { $addToSet: { likes: idLike } },
+      {new: true})
+  }
+
+  public async deleteLikeId(    
+    idArticle: mongoose.Types.ObjectId, 
+    idLike: mongoose.Types.ObjectId
+  ): Promise<ArticleSchema | null> {
+
+    return await ArticleModel.findByIdAndUpdate(
+      idArticle,
+      { $pull: { likes: idLike}},
+      { new: true })
   }
 
 }

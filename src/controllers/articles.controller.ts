@@ -19,7 +19,7 @@ class ArticleController {
     const { slug } = req.params
     const article = await articleRepository.getArticleBySlug(slug)
     if (!article) {
-      res.status(404).send('Article not found')
+      res.status(404).json({ message: 'Article not found.' })
       return
     }
     res.status(200).send(article)
@@ -31,7 +31,7 @@ class ArticleController {
     const author = req.user!._id 
     const article = await articleRepository.findBySlugAndUpdate(slug, title, content, author)
     if (!article) {
-      res.status(404).send('Article not found')
+      res.status(404).json({ message: 'Article not found.' })
       return
     }
     res.status(200).send(article)
@@ -42,10 +42,10 @@ class ArticleController {
     const author = req.user!._id
     const article = await articleRepository.findBySlugAndDelete(slug, author)
     if (!article) {
-      res.status(404).send('Article not found')
+      res.status(404).json({ message: 'Article not found.' })
       return
     }
-    res.status(200).send('Article deleted')
+    res.status(200).json({ message: 'Article deleted.' })
   }
 
 }
