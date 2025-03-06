@@ -1,6 +1,6 @@
 # API Blog
 
-Welcome to **MonProjet API**, a RESTful API designed to handle authentication, article management, comments, and likes. This API is built using **Node.js**, **Express**, and **MongoDB**, and follows a clean and modular **MVC architecture**.
+Welcome to **API Blog**, a RESTful API designed to handle authentication, article management, comments, and likes. This API is built using **Node.js**, **Express**, and **MongoDB**, and follows a clean and modular **MVC architecture**.
 
 ## 🚀 Features
 - **User Authentication**: Secure sign-up and sign-in with JWT authentication.
