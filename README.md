@@ -124,7 +124,7 @@ POST /api/comments
 ```json
 {
   "targetId": "id",
-  "contantType": "Article",
+  "contentType": "Article",
   "content": "This is a comment."
 }
 ```
