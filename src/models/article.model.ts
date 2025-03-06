@@ -5,12 +5,21 @@ import { LikeSchema } from './like.model'
 import mongoose, { Document } from 'mongoose'
 import getSlug from 'speakingurl'
 
+/**
+ * Pre-save middleware for the Article model.
+ * Automatically generates and assigns a slug to the article based on its title before saving,
+ * using the `speakingurl` library to ensure the slug is URL-friendly and localized to French.
+ */
 @pre<Article>('save', async function() {
   if (this.isModified('title')) {
     this.slug = getSlug(this.title, { lang: 'fr' });
   }
 })
 
+/**
+ * Schema definition for the Article document, including references to other documents and required fields.
+ * Represents an article authored by a user, with functionality to add comments and likes from other users.
+ */
 class Article extends Document {
 
   @prop({ default: () => new mongoose.Types.ObjectId() })

@@ -4,8 +4,21 @@ import articleRepository from './article.repository'
 import commentRepository from './comment.repository'
 import mongoose from 'mongoose'
 
-class LikeRepository {
+/**
+ * Repository class for managing like entities. Provides functionality for adding, checking,
+ * and deleting likes in relation to different content types such as articles and comments.
+ */
+export class LikeRepository {
 
+  /**
+   * Adds a like to a specific content (article or comment) and records the voter's action.
+   * This method also updates the corresponding article or comment to reflect the new like.
+   * @param targetId - The ObjectId of the content being liked.
+   * @param voter - The ObjectId of the user who is liking the content.
+   * @param contentType - The type of content being liked (Article or Comment).
+   * @param value - The type of vote (Up = 1, Down = -1).
+   * @returns The saved like document.
+   */
   public async addLike(
     targetId: mongoose.Types.ObjectId,
     voter: mongoose.Types.ObjectId, 
@@ -15,15 +28,39 @@ class LikeRepository {
 
     const like = new LikeModel({targetId, voter, contentType, value})
     await like.save()
-    if (contentType === 'Article') {
-      await articleRepository.addLikeId(targetId, like._id)
-    }
-    if (contentType === 'Comment') {
-      await commentRepository.addLikeId(targetId, like._id)
+    switch (contentType) {
+      case 'Article':
+        await articleRepository.addLikeId(targetId, like._id)
+        break
+      case 'Comment':
+        await commentRepository.addLikeId(targetId, like._id)
+        break
     }
     return like
   }
 
+  /**
+   * Checks if a like already exists for a given target content and voter.
+   * @param targetId - The ObjectId of the content.
+   * @param voter - The ObjectId of the user.
+   * @returns A boolean indicating whether the like exists.
+   */
+  public async isLikeExist(
+    targetId: mongoose.Types.ObjectId,
+    voter: mongoose.Types.ObjectId,
+  ): Promise<boolean> {
+
+    const like = await LikeModel.findOne({ targetId, voter })
+    return !!like
+  }
+
+  /**
+   * Deletes a like by its ID and associated voter. Also updates the corresponding content
+   * to remove the reference to the deleted like.
+   * @param likeId - The ObjectId of the like to delete.
+   * @param voter - The ObjectId of the user who added the like.
+   * @returns The deleted like document or null if it was not found.
+   */
   public async deleteLikeById(
     likeId: mongoose.Types.ObjectId, 
     voter: mongoose.Types.ObjectId
@@ -31,16 +68,24 @@ class LikeRepository {
 
     const like = await LikeModel.findOneAndDelete({_id: likeId, voter})
     if (like) {
-      if (like.contentType === 'Article') {
-        await articleRepository.deleteLikeId(like.targetId, likeId)
-      }
-      if (like.contentType === 'Comment') {
-        await commentRepository.deleteLikeId(like.targetId, likeId)
+      switch (like.contentType) {
+        case 'Article':
+          await articleRepository.deleteLikeId(like.targetId, likeId)
+          break
+        case 'Comment':
+          await commentRepository.deleteLikeId(like.targetId, likeId)
+          break
       }
     }
     return like
   }
 
+  /**
+   * Deletes all likes associated with a particular target ID.
+   * @param targetId - The ObjectId of the content from which all likes are to be removed.
+   * @param contentType - The type of the content.
+   * @returns An object containing the result of the deletion operation.
+   */
   public async deleteAllLikesByTargetId(
     targetId: mongoose.Types.ObjectId, 
     contentType: LikeContentType
@@ -51,6 +96,12 @@ class LikeRepository {
     return await LikeModel.deleteMany({ targetId })
   }
 
+  /**
+   * Deletes multiple likes based on an array of like IDs.
+   * @param likeIds - Array of ObjectId representing the likes to delete.
+   * @param contentType - The type of the content associated with the likes (used for logging or additional checks).
+   * @returns An object containing the result of the deletion operation.
+   */
   public async deleteAllLikesByIds(
     likeIds: Array<mongoose.Types.ObjectId>, 
     contentType: LikeContentType

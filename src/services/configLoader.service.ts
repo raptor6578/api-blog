@@ -5,7 +5,10 @@ import * as dotenv from 'dotenv'
 
 dotenv.config()
 
-interface Config {
+/**
+ * Configuration interface detailing the structure expected for application settings.
+ */
+export interface Config {
     allowOrigin: string
     jwt: {
         secret: string
@@ -32,10 +35,21 @@ interface Config {
     passportRedirectFront: string
 }
 
-class ConfigLoaderService {
+/**
+ * Service class for loading and validating application configuration from environment-specific JSON files.
+ * Utilizes the singleton pattern to ensure that configuration is loaded and validated only once,
+ * and then reused throughout the application.
+ */
+export class ConfigLoaderService {
     private static instance: Config
     private constructor() {}
 
+    /**
+     * Validates the configuration object against a Joi schema to ensure all required fields are present
+     * and correctly formatted.
+     * @param config - The configuration object to validate.
+     * @throws {Error} - Throws an error if the configuration does not conform to the schema.
+     */
     private static validateConfig(config: any): void {
         const schema = Joi.object({
             allowOrigin: Joi.string().required(),
@@ -70,6 +84,11 @@ class ConfigLoaderService {
         }
     }
 
+    /**
+     * Gets the application configuration by reading from a JSON file based on the current NODE_ENV,
+     * validating it, and then caching it as a singleton instance.
+     * @returns {Config} - The application configuration object.
+     */
     public static getConfig(): Config {
         if (!this.instance) {
             const environment = process.env.NODE_ENV || 'development'

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon dist/server.js & tsc --watch",
     "prod": "node dist/server.js",
-    "build": "tsc"
+    "build": "tsc",
+    "docs": "typedoc"
   },
   "author": "raptor",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "@types/speakingurl": "^13.0.6",
     "colors": "^1.4.0",
     "eslint": "^9.21.0",
+    "typedoc": "^0.27.9",
     "typescript": "^5.7.3"
   },
   "dependencies": {

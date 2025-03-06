@@ -5,7 +5,17 @@ import { UserSchema } from '../models/user.model'
 
 const config = configLoaderService.getConfig()
 
-function tokenMiddleware(req: Request, res: Response, next: NextFunction) {
+/**
+ * Middleware for validating JWT tokens in Express applications. This middleware checks the authorization header
+ * for a bearer token, verifies the token, and decodes it to extract the user details. It attaches the user details
+ * to the request object for use in downstream handlers or middleware. It also handles various errors associated with
+ * token validation, such as expired tokens and malformed tokens.
+ *
+ * @param req - Express Request object, where the authorization header is extracted and the user object is attached.
+ * @param res - Express Response object, used to send back error messages if token validation fails.
+ * @param next - Callback to pass control to the next middleware function in the stack.
+ */
+export function tokenMiddleware(req: Request, res: Response, next: NextFunction) {
   const { secret } = config.jwt;
   const authorizationHeader = req.headers.authorization
   if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
