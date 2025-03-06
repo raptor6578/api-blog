@@ -11,10 +11,12 @@ class CommentRepository {
     author: mongoose.Types.ObjectId,
     contentType: CommentContentType, 
     targetId: mongoose.Types.ObjectId, 
-    content: string
+    content: string,
+    parentComment?: mongoose.Types.ObjectId
   ): Promise<CommentSchema> {
 
     const comment = new CommentModel({author, contentType, targetId, content})
+    if (parentComment) { comment.parentComment = parentComment }
     await comment.save()
     if (contentType === 'Article') {
       await articleRepository.addCommentId(targetId, comment._id)
@@ -38,13 +40,28 @@ class CommentRepository {
   ): Promise<DeleteResult> {
 
     // TODO: Verifier si targetId existe toujours et si oui supprimer les ID
-    // Verifier si il existe des commentaires avec pour parent "commentId"
 
     const comment = await CommentModel.deleteOne({ _id: commentId, author })
     if (comment.deletedCount > 0) {
       await likeRepository.deleteAllLikesByTargetId(commentId, contentType)
+      await this.deleteAllCommentByParentComment(commentId)
     }
     return comment
+  }
+
+  public async deleteAllCommentByParentComment(parentComment: mongoose.Types.ObjectId) {
+
+    // TODO: Verifier si targetId existe toujours et si oui supprimer les ID
+
+    const comments = await CommentModel.find({ parentComment })
+    const likeIds = comments.reduce((acc: mongoose.Types.ObjectId[], comment) => {
+      acc.push(...comment.likes as mongoose.Types.ObjectId[])
+      return acc
+    }, [])
+    if (likeIds.length > 0) {
+      await likeRepository.deleteAllLikesByIds(likeIds, 'Comment' as LikeContentType);
+    }
+    return await CommentModel.deleteMany({ parentComment })
   }
 
   public async deleteAllCommentsByTargetId(
@@ -53,9 +70,14 @@ class CommentRepository {
   ):  Promise<DeleteResult> {
 
     // TODO: Verifier si targetId existe toujours et si oui supprimer les ID
-    // Verifier si il existe des commentaires avec pour parent les "commentId"
 
     const comments = await CommentModel.find({ targetId })
+
+    // Est-ce utile dans cette logique de chercher le parent vu qu'on supprrime tout avec targetId?
+    for (const comment of comments) {
+      await this.deleteAllCommentByParentComment(comment.parentComment as mongoose.Types.ObjectId)
+    }
+
     const likeIds = comments.reduce((acc: mongoose.Types.ObjectId[], comment) => {
       acc.push(...comment.likes as mongoose.Types.ObjectId[])
       return acc

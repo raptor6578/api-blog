@@ -5,8 +5,8 @@ class CommentsController {
 
   public async addComment(req: Request, res: Response): Promise<void> {
     const author = req.user!._id 
-    const { contentType, targetId, content } = req.body
-    await commentRepository.addComment(author, contentType, targetId, content)
+    const { contentType, targetId, content, parentComment } = req.body
+    await commentRepository.addComment(author, contentType, targetId, content, parentComment)
     res.status(201).json({ message: 'Comment created successfully.' })
   } 
 
