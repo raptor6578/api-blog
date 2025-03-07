@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import articleRepository from '../repositories/article.repository'
+import mongoose from 'mongoose'
 
 /**
  * Controller for managing articles.
@@ -36,7 +37,7 @@ export class ArticleController {
    * @param res - The Express response object.
    * @returns Sends the found article or an error message if no article is found.
    */
-  public async getArticleById(req: Request, res: Response): Promise<void> {
+  public async getArticleBySlug(req: Request, res: Response): Promise<void> {
     const { slug } = req.params
     const article = await articleRepository.getArticleBySlug(slug)
     if (!article) {
@@ -46,7 +47,7 @@ export class ArticleController {
     res.status(200).send(article)
   }
 
-    /**
+  /**
    * Updates an existing article identified by its slug. Extracts the new title and content of the article from the request body, and the author's ID from the authenticated user.
    * @param req - The Express request object, which must include `title` and `content` in `req.body`, the `slug` in `req.params`, and the user's ID in `req.user!._id`.
    * @param res - The Express response object.

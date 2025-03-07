@@ -15,12 +15,13 @@ export class ArticleRepository {
    * @param title - Title of the article.
    * @param content - Content of the article.
    * @param author - ObjectId of the author creating the article.
+   * @param session - Optional ClientSession for the transaction.
    * @returns The saved article document.
    */
   public async newArticle(
     title: string, 
     content: string, 
-    author: mongoose.Types.ObjectId
+    author: mongoose.Types.ObjectId,
   ): Promise<ArticleSchema> {
 
     const article = new ArticleModel({ title, content, author })

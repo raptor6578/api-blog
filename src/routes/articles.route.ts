@@ -23,7 +23,7 @@ export function ArticlesRoute() {
 
     router.get('/', articlesController.getAll)
     router.post('/', tokenMiddleware, articlesController.newArticle)
-    router.get('/:slug', articlesController.getArticleById)
+    router.get('/:slug', articlesController.getArticleBySlug)
     router.put('/:slug', tokenMiddleware, articlesController.updateArticle)
     router.delete('/:slug', tokenMiddleware, articlesController.deleteArticle)
     
