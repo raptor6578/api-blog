@@ -1,5 +1,6 @@
 import express from 'express'
 import commentsController from '../controllers/comments.controller'
+import sessionMiddleware from '../middlewares/session.midleware'
 
 /**
  * Creates and returns an Express Router for comment-related routes.
@@ -18,7 +19,7 @@ export function ArticlesRoute() {
 
   router.post('/', commentsController.addComment)
   router.put('/', commentsController.updateComment)
-  router.delete('/', commentsController.deleteComment)
+  router.delete('/', sessionMiddleware, commentsController.deleteComment)
 
   return router
 }

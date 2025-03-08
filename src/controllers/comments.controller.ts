@@ -20,7 +20,7 @@ export class CommentsController {
 
     // TODO: verifier l'existance de targetID
 
-    await commentRepository.addComment(author, contentType, targetId, content, parentComment)
+    await commentRepository.addComment(author, contentType, targetId, content, {session: req.session, parentComment})
     res.status(201).json({ message: 'Comment created successfully.' })
   } 
 
@@ -33,7 +33,7 @@ export class CommentsController {
   public async updateComment(req: Request, res: Response): Promise<void> {
     const author = req.user!._id 
     const { commentId, content } = req.body
-    const comment = await commentRepository.updateComment(commentId, author, content)
+    const comment = await commentRepository.updateComment(commentId, author, content, { session: req.session })
     if (!comment) {
       res.status(404).json({ message: 'Comment not found.' })
       return
@@ -51,8 +51,8 @@ export class CommentsController {
   public async deleteComment(req: Request, res: Response): Promise<void> {
     const author = req.user!._id 
     const { commentId, contentType } = req.body
-    const comment = await commentRepository.deleteCommentById(commentId, author, contentType)
-    if (comment.deletedCount === 0) {
+    const comment = await commentRepository.deleteCommentById(commentId, author, contentType, { session: req.session })
+    if (!comment) {
       res.status(404).json({ message: 'Comment not found or not authorized to delete.' })
       return
     }

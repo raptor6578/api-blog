@@ -1,14 +1,7 @@
 import { getModelForClass, prop, Ref } from '@typegoose/typegoose'
 import { UserSchema } from './user.model'
 import mongoose, { Document } from 'mongoose'
-
-/**
- * Enum to define the types of content that can receive likes.
- */
-enum LikeContentType {
-  Article = 'Article',
-  Comment = 'Comment',
-}
+import { ContentType } from '../enums/contentType.enum'
 
 /**
  * Enum to represent the value of a like, supporting both upvotes and downvotes.
@@ -31,8 +24,8 @@ class Like extends Document {
   @prop({ ref: () => UserSchema, required: true })
   public voter!: Ref<UserSchema>
 
-  @prop({ enum: LikeContentType, required: true })
-  public contentType!: LikeContentType
+  @prop({ enum: ContentType, required: true })
+  public contentType!: ContentType
 
   @prop({ required: true, index: true, refPath: 'contentType' })
   public targetId!: mongoose.Types.ObjectId
@@ -45,4 +38,4 @@ class Like extends Document {
 }
 
 const LikeModel = getModelForClass(Like)
-export { LikeModel, Like as LikeSchema, LikeContentType, ValueType }
+export { LikeModel, Like as LikeSchema, ValueType }

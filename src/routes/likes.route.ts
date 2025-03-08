@@ -1,5 +1,6 @@
 import express from 'express'
 import likesController from '../controllers/likes.controller'
+import sessionMiddleware from '../middlewares/session.midleware'
 
 /**
  * Creates and returns an Express Router for like-related routes.
@@ -17,8 +18,8 @@ import likesController from '../controllers/likes.controller'
 export function LikesRoute() {
   const router = express.Router()
 
-  router.post('/', likesController.addLike)
-  router.delete('/', likesController.deleteLike)
+  router.post('/', sessionMiddleware, likesController.addLike)
+  router.delete('/', sessionMiddleware, likesController.deleteLike)
 
   return router
 }

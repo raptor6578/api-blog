@@ -1,8 +1,9 @@
 import { DeleteResult } from 'mongoose'
-import { LikeModel, LikeSchema, LikeContentType, ValueType } from '../models/like.model'
+import { LikeModel, LikeSchema, ValueType } from '../models/like.model'
 import articleRepository from './article.repository'
 import commentRepository from './comment.repository'
 import mongoose from 'mongoose'
+import { ContentType } from '../enums/contentType.enum'
 
 /**
  * Repository class for managing like entities. Provides functionality for adding, checking,
@@ -17,23 +18,26 @@ export class LikeRepository {
    * @param voter - The ObjectId of the user who is liking the content.
    * @param contentType - The type of content being liked (Article or Comment).
    * @param value - The type of vote (Up = 1, Down = -1).
+   * @param options - Optional parameters for the operation.
+   * @param options.session - An optional MongoDB session for transactions.
    * @returns The saved like document.
    */
   public async addLike(
     targetId: mongoose.Types.ObjectId,
     voter: mongoose.Types.ObjectId, 
-    contentType: LikeContentType, 
-    value: ValueType
+    contentType: ContentType, 
+    value: ValueType,
+    options: { session?: mongoose.ClientSession }
   ): Promise<LikeSchema> {
 
     const like = new LikeModel({targetId, voter, contentType, value})
     await like.save()
     switch (contentType) {
       case 'Article':
-        await articleRepository.addLikeId(targetId, like._id)
+        await articleRepository.addLikeId(targetId, like._id, options)
         break
       case 'Comment':
-        await commentRepository.addLikeId(targetId, like._id)
+        await commentRepository.addLikeId(targetId, like._id, options)
         break
     }
     return like
@@ -59,21 +63,24 @@ export class LikeRepository {
    * to remove the reference to the deleted like.
    * @param likeId - The ObjectId of the like to delete.
    * @param voter - The ObjectId of the user who added the like.
+   * @param options - Optional parameters for the operation.
+   * @param options.session - An optional MongoDB session for transactions.
    * @returns The deleted like document or null if it was not found.
    */
   public async deleteLikeById(
     likeId: mongoose.Types.ObjectId, 
-    voter: mongoose.Types.ObjectId
+    voter: mongoose.Types.ObjectId,
+    options: { session?: mongoose.ClientSession }
   ): Promise<LikeSchema | null> {
 
-    const like = await LikeModel.findOneAndDelete({_id: likeId, voter})
+    const like = await LikeModel.findOneAndDelete({_id: likeId, voter}, { session: options.session })
     if (like) {
       switch (like.contentType) {
         case 'Article':
-          await articleRepository.deleteLikeId(like.targetId, likeId)
+          await articleRepository.deleteLikeId(like.targetId, likeId, options)
           break
         case 'Comment':
-          await commentRepository.deleteLikeId(like.targetId, likeId)
+          await commentRepository.deleteLikeId(like.targetId, likeId, options)
           break
       }
     }
@@ -84,32 +91,36 @@ export class LikeRepository {
    * Deletes all likes associated with a particular target ID.
    * @param targetId - The ObjectId of the content from which all likes are to be removed.
    * @param contentType - The type of the content.
+   * @param options - Optional parameters for the operation.
+   * @param options.session - An optional MongoDB session for transactions.
    * @returns An object containing the result of the deletion operation.
    */
   public async deleteAllLikesByTargetId(
     targetId: mongoose.Types.ObjectId, 
-    contentType: LikeContentType
+    contentType: ContentType,
+    options: { session?: mongoose.ClientSession }
   ):  Promise<DeleteResult> {
 
     // TODO: Verifier si targetId existe toujours et si oui supprimer les ID
-
-    return await LikeModel.deleteMany({ targetId })
+    return await LikeModel.deleteMany({ targetId }, { session: options.session })
   }
 
   /**
    * Deletes multiple likes based on an array of like IDs.
    * @param likeIds - Array of ObjectId representing the likes to delete.
    * @param contentType - The type of the content associated with the likes (used for logging or additional checks).
+   * @param options - Optional parameters for the operation.
+   * @param options.session - An optional MongoDB session for transactions.
    * @returns An object containing the result of the deletion operation.
    */
   public async deleteAllLikesByIds(
     likeIds: Array<mongoose.Types.ObjectId>, 
-    contentType: LikeContentType
+    contentType: ContentType,
+    options: { session?: mongoose.ClientSession }
   ): Promise<DeleteResult> {
 
     // TODO: Verifier si targetId existe toujours et si oui supprimer les ID
-
-    return await LikeModel.deleteMany({ _id: { $in: likeIds } });
+    return await LikeModel.deleteMany({ _id: { $in: likeIds } }, { session: options.session });
   }
 
 }

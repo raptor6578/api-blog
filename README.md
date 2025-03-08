@@ -9,6 +9,7 @@ Welcome to **API Blog**, a RESTful API designed to handle authentication, articl
 - **Like System**: Upvote/downvote articles and comments.
 - **Middleware Support**: Includes error handling, input sanitization, and security enhancements.
 - **Scalable Architecture**: Designed with modular controllers, services, and repositories.
+- **Transaction**: Uses a transaction system to secure cascading requests.
 
 ## 🏗️ Tech Stack
 - **Backend**: Node.js, Express.js

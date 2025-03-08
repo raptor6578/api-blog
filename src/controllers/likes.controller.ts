@@ -24,7 +24,7 @@ export class LikeController {
       res.status(409).json({ message: "You have already voted for this ID." })
       return
     }
-    await likeRepository.addLike(targetId, voter, contentType, value)
+    await likeRepository.addLike(targetId, voter, contentType, value, { session: req.session })
     res.status(201).json({ message: 'successfully liked.' })
   }
 
@@ -38,7 +38,7 @@ export class LikeController {
   public async deleteLike(req: Request, res: Response): Promise<void> {
     const voter = req.user!._id 
     const { targetId } = req.body
-    const like = await likeRepository.deleteLikeById(targetId, voter)
+    const like = await likeRepository.deleteLikeById(targetId, voter, { session: req.session })
     if (!like) {
       res.status(404).json({ message: 'Like not found or not authorized to delete.' })
       return

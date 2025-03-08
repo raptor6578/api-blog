@@ -1,6 +1,7 @@
 import express from 'express'
 import articlesController from '../controllers/articles.controller'
 import tokenMiddleware from '../middlewares/token.middleware'
+import sessionMiddleware from '../middlewares/session.midleware'
 
 /**
  * Creates and returns an Express Router for article-related routes.
@@ -25,7 +26,7 @@ export function ArticlesRoute() {
     router.post('/', tokenMiddleware, articlesController.newArticle)
     router.get('/:slug', articlesController.getArticleBySlug)
     router.put('/:slug', tokenMiddleware, articlesController.updateArticle)
-    router.delete('/:slug', tokenMiddleware, articlesController.deleteArticle)
+    router.delete('/:slug', tokenMiddleware, sessionMiddleware, articlesController.deleteArticle)
     
     return router
 }

@@ -16,7 +16,7 @@ export class ArticleController {
   public async newArticle(req: Request, res: Response): Promise<void> {
     const { title, content } = req.body
     const author = req.user!._id
-    await articleRepository.newArticle(title, content, author)
+    await articleRepository.newArticle(title, content, author, {session: req.session})
     res.status(201).json({ message: 'Article created successfully.' })
   }
 
@@ -57,7 +57,7 @@ export class ArticleController {
     const { slug } = req.params
     const { title, content } = req.body
     const author = req.user!._id 
-    const article = await articleRepository.findBySlugAndUpdate(slug, title, content, author)
+    const article = await articleRepository.findBySlugAndUpdate(slug, title, content, author, { session: req.session })
     if (!article) {
       res.status(404).json({ message: 'Article not found.' })
       return
@@ -74,7 +74,7 @@ export class ArticleController {
   public async deleteArticle(req: Request, res: Response): Promise<void> {
     const { slug } = req.params
     const author = req.user!._id
-    const article = await articleRepository.findBySlugAndDelete(slug, author)
+    const article = await articleRepository.findBySlugAndDelete(slug, author, { session: req.session })
     if (!article) {
       res.status(404).json({ message: 'Article not found.' })
       return

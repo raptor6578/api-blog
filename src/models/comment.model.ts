@@ -2,14 +2,7 @@ import { getModelForClass, prop, Ref } from '@typegoose/typegoose'
 import { UserSchema } from './user.model'
 import { LikeSchema } from './like.model'
 import mongoose, { Document } from 'mongoose'
-
-/**
- * Enum for specifying the type of content a comment can be associated with.
- * Currently supports articles.
- */
-enum CommentContentType {
-  Article = 'Article'
-}
+import { ContentType } from '../enums/contentType.enum'
 
 /**
  * Schema definition for the Comment document. Represents a comment made by a user on various types of content.
@@ -23,11 +16,11 @@ class Comment extends Document {
   @prop({ ref: () => UserSchema, required: true })
   public author!: Ref<UserSchema>
 
-  @prop({ enum: CommentContentType, required: true })
-  public contentType!: CommentContentType
+  @prop({ enum: ContentType, required: true })
+  public contentType!: ContentType
 
   @prop({ required: true, index: true, refPath: 'contentType' })
-  public targetId!: string
+  public targetId!: mongoose.Types.ObjectId
 
   @prop({ required: true })
   public content!: string
@@ -44,4 +37,4 @@ class Comment extends Document {
 }
 
 const CommentModel = getModelForClass(Comment)
-export { CommentModel, CommentContentType, Comment as CommentSchema }
+export { CommentModel, Comment as CommentSchema }
