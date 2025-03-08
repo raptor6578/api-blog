@@ -1,6 +1,7 @@
 import express from 'express'
 import likesController from '../controllers/likes.controller'
 import sessionMiddleware from '../middlewares/session.midleware'
+import { validateAddLike, validateDeleteLike } from '../middlewares/validators/like.validator.middleware'
 
 /**
  * Creates and returns an Express Router for like-related routes.
@@ -18,8 +19,8 @@ import sessionMiddleware from '../middlewares/session.midleware'
 export function LikesRoute() {
   const router = express.Router()
 
-  router.post('/', sessionMiddleware, likesController.addLike)
-  router.delete('/', sessionMiddleware, likesController.deleteLike)
+  router.post('/', validateAddLike, sessionMiddleware, likesController.addLike)
+  router.delete('/', validateDeleteLike, sessionMiddleware, likesController.deleteLike)
 
   return router
 }

@@ -1,6 +1,7 @@
 import express from 'express'
 import commentsController from '../controllers/comments.controller'
 import sessionMiddleware from '../middlewares/session.midleware'
+import { validateAddComment, validateDeleteComment, validateUpdateComment } from '../middlewares/validators/comment.validator.middleware'
 
 /**
  * Creates and returns an Express Router for comment-related routes.
@@ -17,9 +18,9 @@ import sessionMiddleware from '../middlewares/session.midleware'
 export function ArticlesRoute() {
   const router = express.Router()
 
-  router.post('/', commentsController.addComment)
-  router.put('/', commentsController.updateComment)
-  router.delete('/', sessionMiddleware, commentsController.deleteComment)
+  router.post('/', validateAddComment, commentsController.addComment)
+  router.put('/', validateUpdateComment, commentsController.updateComment)
+  router.delete('/', validateDeleteComment, sessionMiddleware, commentsController.deleteComment)
 
   return router
 }

@@ -7,7 +7,6 @@ const password = Joi.string().min(8).required()
 const signUpSchema = Joi.object({
     email: email,
     password: password,
-    name: Joi.string().alphanum().min(3).max(30).optional(),
 })
 
 const signInSchema = Joi.object({
