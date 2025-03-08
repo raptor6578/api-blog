@@ -189,6 +189,16 @@ export class ArticleRepository {
       { new: true, session: options.session })
   }
 
+  /**
+   * Checks if an article is already registered in the database.
+   * @param idArticle - The id article to check.
+   * @returns A boolean indicating whether the id exists in the database.
+   */
+    public async doesArticleExist(idArticle: mongoose.Types.ObjectId): Promise<boolean> {
+      const article = await ArticleModel.findById(idArticle)
+      return !!article
+    }
+
 }
 
 export default new ArticleRepository

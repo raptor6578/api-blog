@@ -16,7 +16,7 @@ export class AuthController {
      */
     public async signUp(req: Request, res: Response): Promise<void> {
         const { email, password } = req.body
-        if (await userRepository.isEmailExists(email)) {
+        if (await userRepository.doesEmailExist(email)) {
             res.status(409).json({ message: "An account using the entered email already exists." })
             return
         }

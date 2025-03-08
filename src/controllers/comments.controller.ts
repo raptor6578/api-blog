@@ -12,14 +12,23 @@ export class CommentsController {
    * and optionally, a parent comment ID for nested comments.
    * @param req - The Express request object, which must include `contentType`, `targetId`, `content`, and optionally `parentComment` in `req.body`.
    * @param res - The Express response object.
-   * @returns A JSON response with a status of 201 indicating successful comment creation.
+   * @returns A JSON response with a status of 201 indicating successful comment creation or an error message.
    */
   public async addComment(req: Request, res: Response): Promise<void> {
     const author = req.user!._id 
     const { contentType, targetId, content, parentComment } = req.body
-
-    // TODO: verifier l'existance de targetID
-
+    const doesTargetAvailable = await commentRepository.doesTargetAvailable(targetId, contentType)
+    if (!doesTargetAvailable) {
+      res.status(404).json({ message: 'targetId or contentType is not available.' })
+      return
+    } 
+    if (parentComment) {
+      const doesParentAvailable = await commentRepository.doesCommentAvailable(parentComment, targetId)
+      if (!doesParentAvailable) {
+        res.status(404).json({ message: 'parentComment is not found.' })
+        return
+      } 
+    }
     await commentRepository.addComment(author, contentType, targetId, content, {session: req.session, parentComment})
     res.status(201).json({ message: 'Comment created successfully.' })
   } 

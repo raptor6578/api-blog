@@ -181,6 +181,39 @@ export class CommentRepository {
       { new: true, session: options.session })
   }
 
+  /**
+   * Checks if the targetId is already registered in the database.
+   * @param targetId - The ObjectId of the target content.
+   * @param contentType - The type of the content associated with the comments.
+   * @returns A boolean indicating whether the id exists in the database.
+   */
+  public async doesTargetAvailable(
+    targetId: mongoose.Types.ObjectId, 
+    contentType: ContentType
+  ): Promise<boolean> {
+    switch (contentType) {
+      case 'Article':
+        return await articleRepository.doesArticleExist(targetId)
+      default:
+        return false
+    }
+  }
+
+  /**
+   * Checks if the id is already registered in the database.
+   * @param id - The ObjectId of the comment.
+   * @param targetId - The ObjectId of the target content.
+   * @returns A boolean indicating whether the id exists in the database.
+   */
+  public async doesCommentAvailable(
+    id: mongoose.Types.ObjectId,
+    targetId: mongoose.Types.ObjectId, 
+  ): Promise<boolean> {
+
+    const comment = await CommentModel.findOne({_id: id, targetId})
+    return !!comment
+  }
+
 }
 
 export default new CommentRepository()

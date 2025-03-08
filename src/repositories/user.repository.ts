@@ -11,7 +11,7 @@ export class UserRepository {
    * @param email - The email address to check.
    * @returns A boolean indicating whether the email exists in the database.
    */
-  public async isEmailExists(email: string): Promise<boolean> {
+  public async doesEmailExist(email: string): Promise<boolean> {
     const user = await UserModel.findOne({ email })
     return !!user
   }
