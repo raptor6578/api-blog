@@ -20,7 +20,7 @@ export class ArticleController {
     res.status(201).json({ message: 'Article created successfully.' })
   }
 
-    /**
+  /**
    * Retrieves all articles. Does not require any specific parameters in the request.
    * @param req - The Express request object.
    * @param res - The Express response object.

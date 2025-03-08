@@ -19,7 +19,7 @@ export class LikeController {
 
     // TODO: verifier l'existance de targetID
 
-    const isLikeExist = await likeRepository.isLikeExist(targetId, voter)
+    const isLikeExist = await likeRepository.doesLikeExist(targetId, voter)
     if (isLikeExist) {
       res.status(409).json({ message: "You have already voted for this ID." })
       return

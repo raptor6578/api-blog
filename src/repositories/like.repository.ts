@@ -49,7 +49,7 @@ export class LikeRepository {
    * @param voter - The ObjectId of the user.
    * @returns A boolean indicating whether the like exists.
    */
-  public async isLikeExist(
+  public async doesLikeExist(
     targetId: mongoose.Types.ObjectId,
     voter: mongoose.Types.ObjectId,
   ): Promise<boolean> {
@@ -89,6 +89,7 @@ export class LikeRepository {
 
   /**
    * Deletes all likes associated with a particular target ID.
+   * Warning: Use with caution, it does not delete parent model references.
    * @param targetId - The ObjectId of the content from which all likes are to be removed.
    * @param contentType - The type of the content.
    * @param options - Optional parameters for the operation.
@@ -101,12 +102,12 @@ export class LikeRepository {
     options: { session?: mongoose.ClientSession }
   ):  Promise<DeleteResult> {
 
-    // TODO: Verifier si targetId existe toujours et si oui supprimer les ID
     return await LikeModel.deleteMany({ targetId }, { session: options.session })
   }
 
   /**
    * Deletes multiple likes based on an array of like IDs.
+   * Warning: Use with caution, it does not delete parent model references.
    * @param likeIds - Array of ObjectId representing the likes to delete.
    * @param contentType - The type of the content associated with the likes (used for logging or additional checks).
    * @param options - Optional parameters for the operation.
@@ -119,7 +120,6 @@ export class LikeRepository {
     options: { session?: mongoose.ClientSession }
   ): Promise<DeleteResult> {
 
-    // TODO: Verifier si targetId existe toujours et si oui supprimer les ID
     return await LikeModel.deleteMany({ _id: { $in: likeIds } }, { session: options.session });
   }
 
