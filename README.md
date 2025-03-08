@@ -18,6 +18,10 @@ Welcome to **API Blog**, a RESTful API designed to handle authentication, articl
 - **Validation**: Joi for input validation
 - **Error Handling**: Express Async Errors Middleware
 
+# 📖 Typedoc
+
+You can consult the Typedoc at this URL https://raptor6578.github.io/api-blog/
+
 ---
 
 ## 📦 Installation
