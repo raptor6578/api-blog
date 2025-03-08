@@ -31,7 +31,7 @@ export class CommentRepository {
   ): Promise<CommentSchema> {
 
     const comment = new CommentModel({author, contentType, targetId, content})
-    if (options && options.parentComment) { comment.parentComment = options.parentComment }
+    if (options.parentComment) { comment.parentComment = options.parentComment }
     await comment.save({ session: options.session })
     if (contentType === 'Article') {
       await articleRepository.addCommentId(targetId, comment._id, options)
@@ -100,8 +100,7 @@ export class CommentRepository {
     parentComment: mongoose.Types.ObjectId,
     options: { session?: mongoose.ClientSession }
   ) {
-
-    // TODO: Verifier si targetId existe toujours et si oui supprimer les ID
+    
     const comments = await CommentModel.find({ parentComment })
     const likeIds = comments.reduce((acc: mongoose.Types.ObjectId[], comment) => {
       acc.push(...comment.likes as mongoose.Types.ObjectId[])
