@@ -4,14 +4,14 @@ import * as path from 'path'
 /**
  * Interfaces representing the details of a response.
  */
-interface ResponseDetails {
+export interface ResponseDetails {
   statusCode: number
   message: string
 }
-interface ResponseType {
+export interface ResponseType {
   [type: string]: ResponseDetails
 }
-interface ResponseConfig {
+export interface ResponseConfig {
   [controller: string]: {
     [method: string]: ResponseType
   }
