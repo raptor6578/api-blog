@@ -2,7 +2,7 @@ import 'express-async-errors'
 import express from 'express'
 import configLoaderService from './services/configLoader.service'
 import databaseService from './services/database.service'
-import middlewaresLoader from './loaders/middlewares.loader'
+import globalMiddlewaresLoader from './loaders/globalMiddlewares.loader'
 import routesLoader from './loaders/routes.loader'
 
 /**
@@ -24,7 +24,7 @@ export function startServer(): void {
 	const app = express()
 
 	databaseService.connect()
-	middlewaresLoader(app)
+	globalMiddlewaresLoader(app)
 	routesLoader(app)
 
 	app.listen(config.expressPort, () => {

@@ -20,7 +20,7 @@ import errorHandler from '../middlewares/errorHandler.middleware'
  * 
  * @param app - The Express application instance to which middlewares are attached.
  */
-export function middlewaresLoader(app: Express) {
+export function globalMiddlewaresLoader(app: Express) {
 
   // Loaded before routes
   app.use(corsMiddleware)
@@ -35,4 +35,4 @@ export function middlewaresLoader(app: Express) {
   
 }
 
-export default middlewaresLoader
+export default globalMiddlewaresLoader
