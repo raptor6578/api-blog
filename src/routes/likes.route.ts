@@ -1,6 +1,6 @@
 import express from 'express'
 import likesController from '../controllers/likes.controller'
-import sessionMiddleware from '../middlewares/session.midleware'
+import sessionMiddleware from '../middlewares/session.middleware'
 import { validateAddLike, validateDeleteLike } from '../middlewares/validators/like.validator.middleware'
 
 /**

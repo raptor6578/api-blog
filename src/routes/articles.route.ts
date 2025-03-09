@@ -1,7 +1,7 @@
 import express from 'express'
 import articlesController from '../controllers/articles.controller'
 import tokenMiddleware from '../middlewares/token.middleware'
-import sessionMiddleware from '../middlewares/session.midleware'
+import sessionMiddleware from '../middlewares/session.middleware'
 import { validateNewAndUpdateArticle } from '../middlewares/validators/article.validator.middleware'
 
 /**

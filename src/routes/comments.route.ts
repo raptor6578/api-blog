@@ -1,6 +1,6 @@
 import express from 'express'
 import commentsController from '../controllers/comments.controller'
-import sessionMiddleware from '../middlewares/session.midleware'
+import sessionMiddleware from '../middlewares/session.middleware'
 import { validateAddComment, validateDeleteComment, validateUpdateComment } from '../middlewares/validators/comment.validator.middleware'
 
 /**
