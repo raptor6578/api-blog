@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import likeRepository from "../repositories/like.repository"
+import responseService from '../services/response.service'
 
 /**
  * Controller for managing likes associated with various content types.
@@ -21,11 +22,13 @@ export class LikeController {
 
     const isLikeExist = await likeRepository.doesLikeExist(targetId, voter)
     if (isLikeExist) {
-      res.status(409).json({ message: "You have already voted for this ID." })
+          const { statusCode, message } = responseService.getStatusCodeAndMessage('likes', 'addLike', 'YouHaveAlreadyVoted')
+          res.status(statusCode).json({message})
       return
     }
     await likeRepository.addLike(targetId, voter, contentType, value, { session: req.session })
-    res.status(201).json({ message: 'successfully liked.' })
+    const { statusCode, message } = responseService.getStatusCodeAndMessage('likes', 'addLike', 'success')
+    res.status(statusCode).json({message})
   }
 
   /**
@@ -40,10 +43,13 @@ export class LikeController {
     const { targetId } = req.body
     const like = await likeRepository.deleteLikeById(targetId, voter, { session: req.session })
     if (!like) {
-      res.status(404).json({ message: 'Like not found or not authorized to delete.' })
+      const { statusCode, message } = responseService
+        .getStatusCodeAndMessage('likes', 'deleteLike', 'LikeNotFoundOrNotAuthorizedToDelete')
+      res.status(statusCode).json({message})
       return
     }
-    res.status(200).send({ message: 'Like deleted successfully.' })
+    const { statusCode, message } = responseService.getStatusCodeAndMessage('likes', 'deleteLike', 'success')
+    res.status(statusCode).json({message})
   }
 
 }

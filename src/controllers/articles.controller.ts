@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import articleRepository from '../repositories/article.repository'
-import mongoose from 'mongoose'
+import responseService from '../services/response.service'
 
 /**
  * Controller for managing articles.
@@ -17,7 +17,8 @@ export class ArticleController {
     const { title, content } = req.body
     const author = req.user!._id
     await articleRepository.newArticle(title, content, author, {session: req.session})
-    res.status(201).json({ message: 'Article created successfully.' })
+    const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'newArticle', 'success')
+    res.status(statusCode).json({message})
   }
 
   /**
@@ -41,7 +42,8 @@ export class ArticleController {
     const { slug } = req.params
     const article = await articleRepository.getArticleBySlug(slug)
     if (!article) {
-      res.status(404).json({ message: 'Article not found.' })
+      const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'getArticleBySlug', 'notFound')
+      res.status(statusCode).json({message})
       return
     }
     res.status(200).send(article)
@@ -59,7 +61,8 @@ export class ArticleController {
     const author = req.user!._id 
     const article = await articleRepository.findBySlugAndUpdate(slug, title, content, author, { session: req.session })
     if (!article) {
-      res.status(404).json({ message: 'Article not found.' })
+      const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'updateArticle', 'notFound')
+      res.status(statusCode).json({message})
       return
     }
     res.status(200).send(article)
@@ -76,10 +79,12 @@ export class ArticleController {
     const author = req.user!._id
     const article = await articleRepository.findBySlugAndDelete(slug, author, { session: req.session })
     if (!article) {
-      res.status(404).json({ message: 'Article not found.' })
+      const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'deleteArticle', 'notFound')
+      res.status(statusCode).json({message})
       return
     }
-    res.status(200).json({ message: 'Article deleted.' })
+    const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'deleteArticle', 'success')
+    res.status(statusCode).json({message})
   }
 
 }

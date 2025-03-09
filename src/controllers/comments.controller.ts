@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import commentRepository from '../repositories/comment.repository'
+import responseService from '../services/response.service'
 
 /**
  * Controller for managing comments.
@@ -19,18 +20,21 @@ export class CommentsController {
     const { contentType, targetId, content, parentComment } = req.body
     const doesTargetAvailable = await commentRepository.doesTargetAvailable(targetId, contentType)
     if (!doesTargetAvailable) {
-      res.status(404).json({ message: 'targetId or contentType is not available.' })
+      const { statusCode, message } = responseService.getStatusCodeAndMessage('comments', 'addComment', 'targetIdOrContentTypeIsNotAvailable')
+      res.status(statusCode).json({message})
       return
     } 
     if (parentComment) {
       const doesParentAvailable = await commentRepository.doesCommentAvailable(parentComment, targetId)
       if (!doesParentAvailable) {
-        res.status(404).json({ message: 'parentComment is not found.' })
+        const { statusCode, message } = responseService.getStatusCodeAndMessage('comments', 'addComment', 'parentCommentIsNotFound')
+        res.status(statusCode).json({message})
         return
       } 
     }
     await commentRepository.addComment(author, contentType, targetId, content, {session: req.session, parentComment})
-    res.status(201).json({ message: 'Comment created successfully.' })
+    const { statusCode, message } = responseService.getStatusCodeAndMessage('comments', 'addComment', 'success')
+    res.status(statusCode).json({message})
   } 
 
   /**
@@ -44,7 +48,8 @@ export class CommentsController {
     const { commentId, content } = req.body
     const comment = await commentRepository.updateComment(commentId, author, content, { session: req.session })
     if (!comment) {
-      res.status(404).json({ message: 'Comment not found.' })
+      const { statusCode, message } = responseService.getStatusCodeAndMessage('comments', 'updateComment', 'commentNotFound')
+      res.status(statusCode).json({message})
       return
     }
     res.status(200).send(comment)
@@ -62,10 +67,13 @@ export class CommentsController {
     const { commentId, contentType } = req.body
     const comment = await commentRepository.deleteCommentById(commentId, author, contentType, { session: req.session })
     if (!comment) {
-      res.status(404).json({ message: 'Comment not found or not authorized to delete.' })
+      const { statusCode, message } = responseService
+        .getStatusCodeAndMessage('comments', 'deleteComment', 'commentNotFoundOrNotAuthorizedToDelete')
+      res.status(statusCode).json({message})
       return
     }
-    res.status(200).send({ message: 'Comment deleted successfully.' })
+    const { statusCode, message } = responseService.getStatusCodeAndMessage('comments', 'deleteComment', 'success')
+    res.status(statusCode).json({message})
   }
 
 }

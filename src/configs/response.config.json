@@ -1,0 +1,104 @@
+{
+  "articles": {
+    "newArticle": {
+      "success": {
+        "statusCode": 201,
+        "message": "Article created successfully."
+      }
+    },
+    "getArticleBySlug": {
+      "notFound": {
+        "statusCode": 404,
+        "message": "Article not found."
+      }
+    },
+    "updateArticle": {
+      "notFound": {
+        "statusCode": 404,
+        "message": "Article not found." 
+      }
+    },
+    "deleteArticleBySlug": {
+      "notFound": {
+        "statusCode": 404,
+        "message": "Article not found."
+      },
+      "success": {
+        "statusCode": 200,
+        "message": "Article deleted."
+      }
+    }
+  },
+  "auth": {
+    "signUp": {
+      "emailExists": {
+        "statusCode": 409,
+        "message": "An account using the entered email already exists."
+      },
+      "success": {
+        "statusCode": 201,
+        "message": "User created successfully."
+      }
+    },
+    "signIn": {
+      "invalidEmailorPassword": {
+        "statusCode": 401,
+        "message": "Invalid email or password."
+      }
+    }
+  },
+  "comments": {
+    "addComment": {
+      "targetIdOrContentTypeIsNotAvailable": {
+        "statusCode": 404,
+        "message": "targetId or contentType is not available."
+      },
+      "parentCommentIsNotFound": {
+        "statusCode": 404,
+        "message": "parentComment is not found."
+      },
+      "success": {
+        "statusCode": 201,
+        "message": "Comment created successfully."
+      }
+    },
+    "updateComment": {
+      "commentNotFound": {
+        "statusCode": 404,
+        "message": "Comment not found."
+      }
+    },
+    "deleteComment": {
+      "commentNotFoundOrNotAuthorizedToDelete": {
+        "statusCode": 404,
+        "message": "Comment not found or not authorized to delete."
+      },
+      "success": {
+        "statusCode": 200,
+        "message": "Comment deleted successfully."
+      }
+    }
+  },
+  "likes": {
+    "addLike": {
+      "YouHaveAlreadyVoted":{
+        "statusCode": 409,
+        "message": "You have already voted for this ID."
+      },
+      "success": {
+        "statusCode": 201,
+        "message": "successfully liked."
+      }
+    },
+    "deleteLike": {
+      "LikeNotFoundOrNotAuthorizedToDelete": {
+        "statusCode": 404,
+        "message": "Like not found or not authorized to delete."
+      },
+      "success": {
+        "statusCode": 200,
+        "message": "Like deleted successfully."
+      }
+    }
+  }
+}

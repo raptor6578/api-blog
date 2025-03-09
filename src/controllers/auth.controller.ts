@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import authService from '../services/auth.service'
 import userRepository from '../repositories/user.repository'
+import responseService from '../services/response.service'
 
 /**
  * Controller responsible for authentication operations.
@@ -17,11 +18,13 @@ export class AuthController {
     public async signUp(req: Request, res: Response): Promise<void> {
         const { email, password } = req.body
         if (await userRepository.doesEmailExist(email)) {
-            res.status(409).json({ message: "An account using the entered email already exists." })
+            const { statusCode, message } = responseService.getStatusCodeAndMessage('auth', 'signUp', 'emailExists')
+            res.status(statusCode).json({ message })
             return
         }
         await userRepository.newUser(email, password)
-        res.status(201).json({ message: "User created successfully." })
+        const { statusCode, message } = responseService.getStatusCodeAndMessage('auth', 'signUp', 'success')
+        res.status(statusCode).json({ message })
     }
 
     /**
@@ -35,11 +38,13 @@ export class AuthController {
         const { email, password } = req.body
         const user = await userRepository.getUserByEmail(email, true)
         if (!user) {
-            res.status(401).json({ message: "Invalid email or password." })
+            const { statusCode, message } = responseService.getStatusCodeAndMessage('auth', 'signIn', 'invalidEmailorPassword')
+            res.status(statusCode).json({ message })
             return
         }
         if (!await authService.isPasswordMatch(password, user.password)) {
-            res.status(401).json({ message: "Invalid email or password." })
+            const { statusCode, message } = responseService.getStatusCodeAndMessage('auth', 'signIn', 'invalidEmailorPassword')
+            res.status(statusCode).json({ message })
             return
         }
         const token = authService.getTokenByUser(user)
