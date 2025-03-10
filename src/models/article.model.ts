@@ -4,7 +4,6 @@ import { CommentSchema } from './comment.model'
 import { LikeSchema } from './like.model'
 import mongoose, { Document } from 'mongoose'
 import getSlug from 'speakingurl'
-import express from 'express'
 
 /**
  * Pre-save middleware for the Article model.

@@ -88,6 +88,7 @@ export class ArticleController {
       res.status(statusCode).json({message})
       return
     }
+    await imageService.deleteImages(article.imageNames, 'articles')
     const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'deleteArticle', 'success')
     res.status(statusCode).json({message})
   }

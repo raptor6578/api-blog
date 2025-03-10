@@ -18,7 +18,7 @@
         "message": "Article not found." 
       }
     },
-    "deleteArticleBySlug": {
+    "deleteArticle": {
       "notFound": {
         "statusCode": 404,
         "message": "Article not found."

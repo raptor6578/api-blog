@@ -38,11 +38,11 @@ export function ArticlesRoute() {
     )
     router.put('/:slug', 
         tokenMiddleware, 
+        validateNewAndUpdateArticle, 
         articlesController.updateArticle
     )
     router.delete('/:slug', 
         tokenMiddleware, 
-        validateNewAndUpdateArticle, 
         sessionMiddleware, 
         articlesController.deleteArticle
     )
