@@ -17,7 +17,7 @@ export class ArticleRepository {
  * @param author - ObjectId of the author creating the article.
  * @param options - Optional parameters for the operation.
  * @param options.session - An optional MongoDB session for transactions.
- * @param options.images - An option to add images.
+ * @param options.imageNames - An option to add images.
  * @returns The saved article document.
  */
   public async newArticle(
