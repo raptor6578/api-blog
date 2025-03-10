@@ -1,5 +1,7 @@
 import { Request } from 'express'
 import multer from 'multer'
+import slugify from 'speakingurl'
+import path from 'path'
 
 /**
  * A mapping of MIME types to their corresponding file extensions.
@@ -36,12 +38,19 @@ const fileFilter = (
  */
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, 'images');
+    callback(null, 'images/temp')
   },
   filename: (req, file, callback) => {
-      const name = file.originalname.split(' ').join('_');
-      const extension = typesAllowed[file.mimetype];
-      callback(null, name + Date.now() + '.' + extension);
+    const originalName = file.originalname
+    const fileExtension = path.extname(originalName)
+    const baseName = path.basename(originalName, fileExtension)
+    const sanitizeFilename = slugify(baseName)
+    const newName = `${Date.now()}-${sanitizeFilename}${fileExtension}`
+    if (!req.imageNames) {
+      req.imageNames = []
+    }
+    req.imageNames.push(newName)
+    callback(null, newName)
   }
 }) 
 

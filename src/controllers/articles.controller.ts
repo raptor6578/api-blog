@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import articleRepository from '../repositories/article.repository'
 import responseService from '../services/response.service'
+import imageService from '../services/image.service'
 
 /**
  * Controller for managing articles.
@@ -15,8 +16,12 @@ export class ArticleController {
    */
   public async newArticle(req: Request, res: Response): Promise<void> {
     const { title, content } = req.body
+    const { imageNames } = req
     const author = req.user!._id
-    await articleRepository.newArticle(title, content, author, {session: req.session})
+    if (imageNames) {
+      await imageService.moveTempTo(imageNames, 'articles')
+    }
+    await articleRepository.newArticle(title, content, author, {session: req.session, imageNames})
     const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'newArticle', 'success')
     res.status(statusCode).json({message})
   }

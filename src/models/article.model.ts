@@ -4,6 +4,7 @@ import { CommentSchema } from './comment.model'
 import { LikeSchema } from './like.model'
 import mongoose, { Document } from 'mongoose'
 import getSlug from 'speakingurl'
+import express from 'express'
 
 /**
  * Pre-save middleware for the Article model.
@@ -36,6 +37,9 @@ class Article extends Document {
 
   @prop({ required: true })
   public content!: string
+
+  @prop({ default: [], type: () => [String] })
+  public imageNames!: string[]
 
   @prop({ default: () => Date.now() })
   public publishedAt!: Date

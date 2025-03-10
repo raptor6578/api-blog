@@ -17,17 +17,19 @@ export class ArticleRepository {
  * @param author - ObjectId of the author creating the article.
  * @param options - Optional parameters for the operation.
  * @param options.session - An optional MongoDB session for transactions.
+ * @param options.images - An option to add images.
  * @returns The saved article document.
  */
   public async newArticle(
     title: string, 
     content: string, 
     author: mongoose.Types.ObjectId,
-    options: { session?: mongoose.ClientSession }
+    options: { session?: mongoose.ClientSession, imageNames?: string[]}
   ): Promise<ArticleSchema> {
 
-    const article = new ArticleModel({ title, content, author })
-    await article.save({ session: options?.session })
+    const { imageNames, session } = options
+    const article = new ArticleModel({ title, content, author, imageNames})
+    await article.save({ session })
     return article
   }
 
