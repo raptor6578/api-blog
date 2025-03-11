@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import likeRepository from "../repositories/like.repository"
 import responseService from '../services/response.service'
+import articleRepository from '../repositories/article.repository'
+import commentRepository from '../repositories/comment.repository'
 
 /**
  * Controller for managing likes associated with various content types.
@@ -17,12 +19,24 @@ export class LikeController {
   public async addLike(req: Request, res: Response): Promise<void> {
     const voter = req.user!._id 
     const { targetId, contentType, value } = req.body
-
-    // TODO: verifier l'existance de targetID
-
+    if (contentType === 'Article') {
+      const doesArticleExist = await articleRepository.doesArticleExist(targetId)
+      if (!doesArticleExist) {
+        const { statusCode, message } = responseService.getStatusCodeAndMessage('likes', 'addLike', 'articleNotFound') 
+        res.status(statusCode).json({message})
+        return
+      }
+    } else if (contentType === 'Comment') {
+      const doesCommentExist = await commentRepository.doesCommentExist(targetId)
+      if (!doesCommentExist) {
+        const { statusCode, message } = responseService.getStatusCodeAndMessage('likes', 'addLike', 'commentNotFound')
+        res.status(statusCode).json({message})
+        return
+      }
+    }
     const isLikeExist = await likeRepository.doesLikeExist(targetId, voter)
     if (isLikeExist) {
-          const { statusCode, message } = responseService.getStatusCodeAndMessage('likes', 'addLike', 'YouHaveAlreadyVoted')
+          const { statusCode, message } = responseService.getStatusCodeAndMessage('likes', 'addLike', 'youHaveAlreadyVoted')
           res.status(statusCode).json({message})
       return
     }

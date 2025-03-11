@@ -201,12 +201,12 @@ export class CommentRepository {
   /**
    * Checks if the id is already registered in the database.
    * @param id - The ObjectId of the comment.
-   * @param targetId - The ObjectId of the target content.
+   * @param targetId - Optional ObjectId of the target content.
    * @returns A boolean indicating whether the id exists in the database.
    */
-  public async doesCommentAvailable(
+  public async doesCommentExist(
     id: mongoose.Types.ObjectId,
-    targetId: mongoose.Types.ObjectId, 
+    targetId?: mongoose.Types.ObjectId, 
   ): Promise<boolean> {
 
     const comment = await CommentModel.findOne({_id: id, targetId})

@@ -81,7 +81,15 @@
   },
   "likes": {
     "addLike": {
-      "YouHaveAlreadyVoted":{
+      "articleNotFound": {
+        "statusCode": 404,
+        "message": "Article not found."
+      },
+      "commentNotFound": {
+        "statusCode": 404,
+        "message": "Comment not found."
+      },
+      "youHaveAlreadyVoted":{
         "statusCode": 409,
         "message": "You have already voted for this ID."
       },

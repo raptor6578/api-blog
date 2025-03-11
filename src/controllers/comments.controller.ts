@@ -25,7 +25,7 @@ export class CommentsController {
       return
     } 
     if (parentComment) {
-      const doesParentAvailable = await commentRepository.doesCommentAvailable(parentComment, targetId)
+      const doesParentAvailable = await commentRepository.doesCommentExist(parentComment, targetId)
       if (!doesParentAvailable) {
         const { statusCode, message } = responseService.getStatusCodeAndMessage('comments', 'addComment', 'parentCommentIsNotFound')
         res.status(statusCode).json({message})

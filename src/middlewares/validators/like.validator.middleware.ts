@@ -5,7 +5,7 @@ import { ContentType } from '../../enums/contentType.enum'
 const addLikeSchema = Joi.object({
     targetId: Joi.string().required(),
     contentType: Joi.string().valid(...Object.values(ContentType)).required(), 
-    value: Joi.boolean().required()
+    value: Joi.number().required()
 })
 
 const deleteLikeSchema = Joi.object({

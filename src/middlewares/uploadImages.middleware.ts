@@ -46,9 +46,7 @@ const storage = multer.diskStorage({
     const baseName = path.basename(originalName, fileExtension)
     const sanitizeFilename = slugify(baseName)
     const newName = `${Date.now()}-${sanitizeFilename}${fileExtension}`
-    if (!req.imageNames) {
-      req.imageNames = []
-    }
+    req.imageNames = req.imageNames || []
     req.imageNames.push(newName)
     callback(null, newName)
   }
