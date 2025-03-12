@@ -102,7 +102,8 @@ export class LikeRepository {
     options: { session?: mongoose.ClientSession }
   ):  Promise<DeleteResult> {
 
-    return await LikeModel.deleteMany({ targetId }, { session: options.session })
+    const result = await LikeModel.deleteMany({ targetId }, { session: options.session })
+    return result
   }
 
   /**
@@ -120,7 +121,8 @@ export class LikeRepository {
     options: { session?: mongoose.ClientSession }
   ): Promise<DeleteResult> {
 
-    return await LikeModel.deleteMany({ _id: { $in: likeIds } }, { session: options.session });
+    const result = await LikeModel.deleteMany({ _id: { $in: likeIds } }, { session: options.session })
+    return result
   }
 
 }

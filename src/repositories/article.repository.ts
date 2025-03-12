@@ -73,13 +73,16 @@ export class ArticleRepository {
    * @returns The found article document or null if not found.
    */
   public async getArticleBySlug(slug: string): Promise<ArticleSchema | null> {
-   return await ArticleModel.findOne({ slug })
+   const article = await ArticleModel.findOne({ slug })
       .populate('author')
       .populate({
         path: 'comments',
-        populate: { path: 'author likes' }
+        populate: { 
+          path: 'author likes' 
+        }
       })
       .populate('likes')
+    return article
   }
 
   /**
@@ -100,10 +103,17 @@ export class ArticleRepository {
     options: { session?: mongoose.ClientSession }
   ): Promise<ArticleSchema | null> {
 
-    return await ArticleModel.findOneAndUpdate(
-      { slug, author }, 
-      { title, content }, 
-      { new: true, session: options.session })
+    const update = await ArticleModel.findOneAndUpdate({ 
+      slug, 
+      author 
+    },{ 
+      title, 
+      content 
+    },{ 
+      new: true, 
+      session: options.session 
+    })
+    return update
   } 
 
   /**
@@ -121,10 +131,18 @@ export class ArticleRepository {
     options: { session?: mongoose.ClientSession }
   ): Promise<ArticleSchema | null> {
 
-    return await ArticleModel.findByIdAndUpdate(
-      idArticle,
-      { $addToSet: { comments: idComment }},
-      {new: true, session: options.session})
+    const update = await ArticleModel.findByIdAndUpdate(
+      idArticle, { 
+        $addToSet: { 
+          comments: idComment 
+        }
+      },
+      {
+        new: true, 
+        session: options.session
+      }
+    )
+    return update
   }
 
   /**
@@ -142,10 +160,17 @@ export class ArticleRepository {
     options: { session?: mongoose.ClientSession }
   ): Promise<ArticleSchema | null> {
 
-    return await ArticleModel.findByIdAndUpdate(
-      idArticle,
-      { $pull: { comments: idComment }},
-      {new: true, session: options.session})
+    const update = await ArticleModel.findByIdAndUpdate(
+      idArticle, { 
+        $pull: { 
+          comments: idComment 
+        }
+      },{
+        new: true, 
+        session: options.session
+      }
+    )
+    return update
   }
 
   /**
@@ -163,10 +188,17 @@ export class ArticleRepository {
     options: { session?: mongoose.ClientSession }
   ): Promise<ArticleSchema | null> {
 
-    return await ArticleModel.findByIdAndUpdate(
-      idArticle,
-      { $addToSet: { likes: idLike } },
-      {new: true, session: options.session})
+    const article = await ArticleModel.findByIdAndUpdate(
+      idArticle, { 
+        $addToSet: { 
+          likes: idLike 
+        } 
+      },{
+        new: true, 
+        session: options.session
+      }
+    )
+    return article
   }
 
   /**
@@ -185,10 +217,17 @@ export class ArticleRepository {
 
   ): Promise<ArticleSchema | null> {
 
-    return await ArticleModel.findByIdAndUpdate(
-      idArticle,
-      { $pull: { likes: idLike}},
-      { new: true, session: options.session })
+    const article = await ArticleModel.findByIdAndUpdate(
+      idArticle, { 
+        $pull: { 
+          likes: idLike
+        }
+      },{ 
+        new: true, 
+        session: options.session 
+      }
+    )
+    return article
   }
 
   /**

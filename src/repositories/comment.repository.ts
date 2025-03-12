@@ -55,7 +55,15 @@ export class CommentRepository {
     options: { session?: mongoose.ClientSession }
   ): Promise<CommentSchema | null> {
 
-    return await CommentModel.findOneAndUpdate({ _id: commentId, author }, { content }, { new: true, session: options.session })
+    const update = await CommentModel.findOneAndUpdate({ 
+      _id: commentId, author 
+    }, { 
+      content 
+    }, { 
+      new: true, 
+      session: options.session 
+    })
+    return update
   }
 
   /**
@@ -99,17 +107,16 @@ export class CommentRepository {
   public async deleteAllCommentByParentComment(
     parentComment: mongoose.Types.ObjectId,
     options: { session?: mongoose.ClientSession }
-  ) {
+  ): Promise<DeleteResult> {
     
     const comments = await CommentModel.find({ parentComment })
     const likeIds = comments.reduce((acc: mongoose.Types.ObjectId[], comment) => {
       acc.push(...comment.likes as mongoose.Types.ObjectId[])
       return acc
     }, [])
-    if (likeIds.length > 0) {
-      await likeRepository.deleteAllLikesByIds(likeIds, 'Comment' as ContentType, options);
-    }
-    return await CommentModel.deleteMany({ parentComment }, { session: options.session })
+    likeIds.length > 0 && await likeRepository.deleteAllLikesByIds(likeIds, 'Comment' as ContentType, options)
+    const result = await CommentModel.deleteMany({ parentComment }, { session: options.session })
+    return result
   }
 
   /**
@@ -137,7 +144,8 @@ export class CommentRepository {
     if (likeIds.length > 0) {
       await likeRepository.deleteAllLikesByIds(likeIds, contentType, options);
     }
-    return await CommentModel.deleteMany({ targetId }, { session: options.session })
+    const result = await CommentModel.deleteMany({ targetId }, { session: options.session })
+    return result
   }
 
   /**
@@ -154,10 +162,17 @@ export class CommentRepository {
     options: { session?: mongoose.ClientSession }
   ): Promise<CommentSchema | null> {
 
-    return await CommentModel.findByIdAndUpdate(
-      idComment,
-      { $addToSet: { likes: idLike } },
-      {new: true, session: options.session})
+    const update = await CommentModel.findByIdAndUpdate(
+      idComment, { 
+        $addToSet: { 
+          likes: idLike 
+        } 
+      },{
+        new: true, 
+        session: options.session
+      }
+    )
+    return update
   } 
 
   /**
@@ -174,10 +189,17 @@ export class CommentRepository {
     options: { session?: mongoose.ClientSession }
   ): Promise<CommentSchema | null> {
 
-    return await CommentModel.findByIdAndUpdate(
-      idComment,
-      { $pull: { likes: idLike}},
-      { new: true, session: options.session })
+    const update = await CommentModel.findByIdAndUpdate(
+      idComment, { 
+        $pull: { 
+          likes: idLike
+        }
+      },{ 
+        new: true, 
+        session: options.session 
+      }
+    )
+    return update
   }
 
   /**
