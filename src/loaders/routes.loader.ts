@@ -1,7 +1,7 @@
 import express, { Express } from 'express'
 import path from 'path'
 import authRoute from '../routes/auth.route'
-import settingsRoute from '../routes/settings.route'
+import imagesRoute from '../routes/images.route'
 import articlesRoutes from '../routes/articles.route'
 import commentsRoutes from '../routes/comments.route'
 import likesRoute from '../routes/likes.route'
@@ -15,18 +15,16 @@ import tokenMiddleware from '../middlewares/token.middleware'
  * @param app - The Express application instance to which routes and static middleware are attached.
  * 
  * Routes are organized under the '/api' path and are structured as follows:
- * - '/images' : Serves static images from a directory.
  * - '/api/auth' : Routes related to authentication processes.
- * - '/api/settings' : Protected routes for user settings, requires token authentication.
+ * - '/api/images' : Static routes for serving images.
  * - '/api/articles' : Routes for article management.
  * - '/api/comments' : Protected routes for comments on articles, requires token authentication.
  * - '/api/likes' : Protected routes for liking articles and comments, requires token authentication.
  */
 export function routesLoader(app: Express) {
 
-  app.use('/images', express.static(path.join(__dirname, 'images')))
   app.use('/api/auth', authRoute())
-  app.use('/api/settings', tokenMiddleware, settingsRoute())
+  app.use('/api/images', imagesRoute())
   app.use('/api/articles', articlesRoutes())
   app.use('/api/comments', tokenMiddleware, commentsRoutes())
   app.use('/api/likes', tokenMiddleware, likesRoute())

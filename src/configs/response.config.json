@@ -108,5 +108,17 @@
         "message": "Like deleted successfully."
       }
     }
+  },
+  "images": {
+    "getImage": {
+      "notFound": {
+        "statusCode": 404,
+        "message": "Image not found."
+      },
+      "invalidDimensions": {
+        "statusCode": 400,
+        "message": "Invalid parameters."
+      }
+    }
   }
 }

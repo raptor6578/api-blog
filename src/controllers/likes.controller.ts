@@ -36,8 +36,8 @@ export class LikeController {
     }
     const isLikeExist = await likeRepository.doesLikeExist(targetId, voter)
     if (isLikeExist) {
-          const { statusCode, message } = responseService.getStatusCodeAndMessage('likes', 'addLike', 'youHaveAlreadyVoted')
-          res.status(statusCode).json({message})
+      const { statusCode, message } = responseService.getStatusCodeAndMessage('likes', 'addLike', 'youHaveAlreadyVoted')
+      res.status(statusCode).json({message})
       return
     }
     await likeRepository.addLike(targetId, voter, contentType, value, { session: req.session })
