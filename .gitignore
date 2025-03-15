@@ -1,3 +1,7 @@
 dist/
-src/configs/
+src/configs/development.config.json
+src/configs/production.config.json
+images/temp/*
+images/articles/*
+images/users/*
 node_modules/
