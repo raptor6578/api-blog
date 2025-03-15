@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import authService from '../services/auth.service'
 import userRepository from '../repositories/user.repository'
 import responseService from '../services/response.service'
+import imageService from '../services/image.service'
 
 /**
  * Controller responsible for authentication operations.
@@ -9,11 +10,14 @@ import responseService from '../services/response.service'
 export class AuthController {
 
     /**
-     * Registers a new user with an email and password. Checks if the email already exists in the database
-     * and returns an error if it does. Otherwise, creates a new user and returns a success message.
-     * @param req - The Express request object, which must include `email` and `password` in `req.body`.
+     * Registers a new user with an email, password, and optionally a profile image. It first checks if the email already exists
+     * in the database and returns an error if so. If the email is not found, it creates a new user account. If an image file is
+     * provided in `req.file`, the image is saved in the 'users' directory using the image service, and the image name is associated
+     * with the user account. The method handles the file upload using `multer`, expecting the file to be accessed via `req.file`.
+     * @param req - The Express request object, which must include `email` and `password` in `req.body`. The request may also include
+     * an uploaded image file accessible through `req.file`.
      * @param res - The Express response object.
-     * @returns A JSON response with a status of 201 indicating successful user creation or 409 if the email already exists.
+     * @returns A JSON response with a status of 201 indicating successful user creation. If the email already exists, it returns a status of 409.
      */
     public async signUp(req: Request, res: Response): Promise<void> {
         const { email, password } = req.body
@@ -22,7 +26,11 @@ export class AuthController {
             res.status(statusCode).json({ message })
             return
         }
-        await userRepository.newUser(email, password)
+        let imageName
+        if (req.file) {
+            imageName = await imageService.saveImage('users', req.file)
+        }
+        await userRepository.newUser(email, password, imageName)
         const { statusCode, message } = responseService.getStatusCodeAndMessage('auth', 'signUp', 'success')
         res.status(statusCode).json({ message })
     }

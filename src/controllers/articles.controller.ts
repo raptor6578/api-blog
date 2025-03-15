@@ -8,17 +8,23 @@ import imageService from '../services/image.service'
  */
 export class ArticleController {
 
-    /**
-   * Creates a new article. Extracts the title and content of the article from the request body, and the author's ID from the authenticated user.
+  /**
+   * Creates a new article with an optional array of images. Extracts the title and content of the article from the request body,
+   * and the author's ID from the authenticated user. If files are uploaded and available in `req.files`, they are processed by 
+   * `imageService.saveImages` to save under the 'articles' directory, and the resulting image names are included in the article data.
+   * This method also supports transactional operations via `req.session`.
    * @param req - The Express request object, which must include `title` and `content` in `req.body`, and the user's ID in `req.user!._id`.
+   * It may also include `files` as an array of image files (if images are uploaded), and `session` for database transaction context.
    * @param res - The Express response object.
-   * @returns Sends a JSON response with a status of 201 and a success message.
+   * @returns Sends a JSON response with a status of 201 and a success message, indicating successful article creation.
    */
   public async newArticle(req: Request, res: Response): Promise<void> {
     const { title, content } = req.body
-    const { imageNames } = req
     const author = req.user!._id
-    imageNames && await imageService.moveTempTo(imageNames, 'articles')
+    let imageNames
+    if (req.files) { 
+      imageNames = await imageService.saveImages('articles', req.files)
+    }
     await articleRepository.newArticle(title, content, author, {session: req.session, imageNames})
     const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'newArticle', 'success')
     res.status(statusCode).json({message})
@@ -86,7 +92,7 @@ export class ArticleController {
       res.status(statusCode).json({message})
       return
     }
-    await imageService.deleteImages(article.imageNames, 'articles')
+    await imageService.deleteImages('articles', article.imageNames)
     const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'deleteArticle', 'success')
     res.status(statusCode).json({message})
   }

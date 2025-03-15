@@ -31,7 +31,7 @@ export class CommentRepository {
   ): Promise<CommentSchema> {
 
     const comment = new CommentModel({author, contentType, targetId, content})
-    if (options.parentComment) { comment.parentComment = options.parentComment }
+    options.parentComment && (comment.parentComment = options.parentComment)
     await comment.save({ session: options.session })
     if (contentType === 'Article') {
       await articleRepository.addCommentId(targetId, comment._id, options)

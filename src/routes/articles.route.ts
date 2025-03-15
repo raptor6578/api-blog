@@ -3,7 +3,7 @@ import articlesController from '../controllers/articles.controller'
 import tokenMiddleware from '../middlewares/token.middleware'
 import sessionMiddleware from '../middlewares/session.middleware'
 import { validateNewAndUpdateArticle } from '../middlewares/validators/article.validator.middleware'
-import uploadImagesMiddleware from '../middlewares/uploadImages.middleware'
+import imageCacheMiddleware from '../middlewares/imageCache.middleware'
 
 /**
  * Creates and returns an Express Router for article-related routes.
@@ -29,7 +29,7 @@ export function ArticlesRoute() {
     )
     router.post('/', 
         tokenMiddleware, 
-        uploadImagesMiddleware, 
+        imageCacheMiddleware(20),
         validateNewAndUpdateArticle, 
         articlesController.newArticle
     )

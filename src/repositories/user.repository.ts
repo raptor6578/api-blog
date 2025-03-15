@@ -33,10 +33,12 @@ export class UserRepository {
    * Creates a new user with the provided email and password. Saves the new user to the database.
    * @param email - The email address for the new user.
    * @param password - The password for the new user, which should be hashed prior to calling this method if not handled internally.
+   * @param imageName - Optional The image name of the user to retrieve.
    * @returns The newly created user document.
    */
-  public async newUser(email: string, password: string): Promise<UserSchema> {
+  public async newUser(email: string, password: string, imageName?: string): Promise<UserSchema> {
     const newUser = new UserModel({ email, password })
+    imageName && (newUser.imageName = imageName)
     await newUser.save()
     return newUser
   }

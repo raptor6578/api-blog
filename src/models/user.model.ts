@@ -33,6 +33,12 @@ class User extends Document {
   public email!: string
 
   /**
+   * Optional image name.
+   */
+  @prop()
+  public imageName!: string
+
+  /**
    * Optional identifier linking to the user's Facebook account.
    */
   @prop()

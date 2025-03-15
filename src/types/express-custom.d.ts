@@ -6,6 +6,5 @@ declare module 'express' {
     interface Request {
         user?: UserSchema
         session?: mongoose.ClientSession
-        imageNames?: string[]
     }
 }

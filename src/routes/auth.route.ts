@@ -1,6 +1,7 @@
-import express, { Router } from 'express'
+import express from 'express'
 import authController from '../controllers/auth.controller'
 import {validateSignIn, validateSignUp} from '../middlewares/validators/auth.validator.middleware'
+import imageCacheMiddleware from '../middlewares/imageCache.middleware'
 
 /**
  * Creates and returns an Express Router for authentication routes.
@@ -22,7 +23,7 @@ export function AuthRoute() {
 
     const router = express.Router()
 
-    router.post('/signup', validateSignUp, authController.signUp)
+    router.post('/signup', imageCacheMiddleware(), validateSignUp, authController.signUp)
     router.post('/signin', validateSignIn, authController.signIn)
 
     return router
