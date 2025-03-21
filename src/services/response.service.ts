@@ -7,6 +7,7 @@ import * as path from 'path'
 export interface ResponseDetails {
   statusCode: number
   message: string
+  type: string
 }
 export interface ResponseType {
   [type: string]: ResponseDetails
@@ -84,7 +85,8 @@ export class ResponseService {
   private getDefaultErrorResponse(): ResponseDetails {
     return {
       statusCode: 500,
-      message: "Internal server error due to missing response configuration."
+      message: "Internal server error due to missing response configuration.",
+      type: "defaultError"
     }
   }
 }

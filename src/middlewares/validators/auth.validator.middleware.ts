@@ -1,8 +1,20 @@
 import Joi from "joi"
 import { Request, Response, NextFunction } from 'express'
+import responseService from "../../services/response.service"
 
-const email = Joi.string().email().required()
-const password = Joi.string().min(8).required()
+const invalidEmail = responseService.getStatusCodeAndMessage('auth', 'validator', 'invalidEmail').message
+const emptyEmail = responseService.getStatusCodeAndMessage('auth', 'validator', 'emptyEmail').message
+const minPassword = responseService.getStatusCodeAndMessage('auth', 'validator', 'minPassword').message
+const emptyPassword = responseService.getStatusCodeAndMessage('auth', 'validator', 'emptyPassword').message
+
+const email = Joi.string().email().required().messages({
+    'string.email': invalidEmail,
+    'string.empty':  emptyEmail,
+  })
+const password = Joi.string().min(8).required().messages({
+    'string.min': minPassword,
+    'string.empty': emptyPassword
+  })
 
 const signUpSchema = Joi.object({
     email: email,
@@ -25,7 +37,8 @@ const signInSchema = Joi.object({
 export function validateSignUp(req: Request, res: Response, next: NextFunction) {
     const { error } = signUpSchema.validate(req.body)
     if (error) {
-        res.status(400).json({ message: "Validation failed", details: error.details.map(detail => detail.message) })
+        const response =  { message: error.details[0].message, type: error.details[0].path[0] }
+        res.status(400).json(response)
         return
     }
     next()
@@ -42,7 +55,8 @@ export function validateSignUp(req: Request, res: Response, next: NextFunction) 
 export function validateSignIn(req: Request, res: Response, next: NextFunction) {
     const { error } = signInSchema.validate(req.body)
     if (error) {
-        res.status(400).json({ message: "Authentication failed.", details: error.details.map(detail => detail.message) })
+        const response =  { message: error.details[0].message, type: error.details[0].path[0] }
+        res.status(400).json(response)
         return
     }
     next()

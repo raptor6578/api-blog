@@ -46,13 +46,13 @@ export class AuthController {
         const { email, password } = req.body
         const user = await userRepository.getUserByEmail(email, true)
         if (!user) {
-            const { statusCode, message } = responseService.getStatusCodeAndMessage('auth', 'signIn', 'invalidEmailorPassword')
-            res.status(statusCode).json({ message })
+            const { statusCode, message, type } = responseService.getStatusCodeAndMessage('auth', 'signIn', 'invalidEmail')
+            res.status(statusCode).json({ message, type })
             return
         }
         if (!await authService.isPasswordMatch(password, user.password)) {
-            const { statusCode, message } = responseService.getStatusCodeAndMessage('auth', 'signIn', 'invalidEmailorPassword')
-            res.status(statusCode).json({ message })
+            const { statusCode, message, type } = responseService.getStatusCodeAndMessage('auth', 'signIn', 'invalidPassword')
+            res.status(statusCode).json({ message, type })
             return
         }
         const token = authService.getTokenByUser(user)

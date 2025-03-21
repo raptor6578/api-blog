@@ -41,9 +41,37 @@
       }
     },
     "signIn": {
-      "invalidEmailorPassword": {
+      "invalidEmail": {
         "statusCode": 401,
-        "message": "Invalid email or password."
+        "message": "L'adresse email est introuvable.",
+        "type": "email"
+      },
+      "invalidPassword": {
+        "statusCode": 401,
+        "message": "Le mot de passe est incorrect.",
+        "type": "password"
+      }
+    },
+    "validator": {
+      "invalidEmail": {
+        "statusCode": 400,
+        "message": "Vous devez entrer une adresse email valide.",
+        "type": "email"
+      },
+      "emptyEmail": {
+        "statusCode": 400,
+        "message": "Une adresse email est requise.",
+        "type": "email"
+      },
+      "minPassword": {
+        "statusCode": 400,
+        "message": "Votre mot de passe doit contenir au moins 8 caractères.",
+        "type": "password"
+      },
+      "emptyPassword": {
+        "statusCode": 400,
+        "message": "Un mot de passe est requis.",
+        "type": "password"
       }
     }
   },
