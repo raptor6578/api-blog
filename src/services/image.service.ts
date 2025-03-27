@@ -76,9 +76,9 @@ export class imageService {
     imageFiles: { [fieldname: string]: Express.Multer.File[] } | Express.Multer.File[]
   ): Promise<string[]> {
 
-    const imageNames = [];
+    const imageNames = []
     if (Array.isArray(imageFiles)) {
-      const promises = imageFiles.map(imageFile => this.saveImage(pathName, imageFile));
+      const promises = imageFiles.map(imageFile => this.saveImage(pathName, imageFile))
       return await Promise.all(promises);
     } else {
       for (const field in imageFiles) {
@@ -91,6 +91,27 @@ export class imageService {
     }
   }
 
+
+  /**
+   * Creates a new directory or resets an existing one by removing its contents.
+   * This method first checks if the directory exists, and if it does, it removes all its contents recursively.
+   * After that, it creates a new directory with the specified path.
+   * @param dirPath - The path of the directory to create or reset.
+   * @returns A Promise that resolves to true if the operation was successful.
+   */
+  public async createOrResetFolder(dirPath: string): Promise<boolean> {
+    try {
+      await fs.promises.access(`images/${dirPath}`);
+      await fs.promises.rm(`images/${dirPath}`, { recursive: true, force: true })
+    } catch (err: any) {
+      if (err.code !== 'ENOENT') {
+        throw err
+      }
+    }
+    await fs.promises.mkdir(`images/${dirPath}`, { recursive: true })
+    return true
+  }
+  
 
 }
 

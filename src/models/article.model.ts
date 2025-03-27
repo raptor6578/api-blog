@@ -12,7 +12,7 @@ import getSlug from 'speakingurl'
  */
 @pre<Article>('save', async function() {
   if (this.isModified('title')) {
-    this.slug = getSlug(this.title, { lang: 'fr' });
+    this.slug = getSlug(this.title, { lang: 'fr' })
   }
 })
 

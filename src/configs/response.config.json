@@ -33,11 +33,11 @@
     "signUp": {
       "emailExists": {
         "statusCode": 409,
-        "message": "An account using the entered email already exists."
+        "message": "L'adresse email utilisée est déjà associée à un compte."
       },
       "success": {
         "statusCode": 201,
-        "message": "User created successfully."
+        "message": "Votre inscription s'est déroulée avec success."
       }
     },
     "signIn": {

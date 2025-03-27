@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import articleRepository from '../repositories/article.repository'
 import responseService from '../services/response.service'
 import imageService from '../services/image.service'
+import getSlug from 'speakingurl'
 
 /**
  * Controller for managing articles.
@@ -22,9 +23,13 @@ export class ArticleController {
     const { title, content } = req.body
     const author = req.user!._id
     let imageNames
+
     if (req.files) { 
-      imageNames = await imageService.saveImages('articles', req.files)
+      const titleSlug = getSlug(title, { lang: 'fr' })
+      await imageService.createOrResetFolder(`articles/${titleSlug}`)
+      imageNames = await imageService.saveImages(`articles/${titleSlug}`, req.files)
     }
+
     await articleRepository.newArticle(title, content, author, {session: req.session, imageNames})
     const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'newArticle', 'success')
     res.status(statusCode).json({message})
