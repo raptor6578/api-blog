@@ -23,6 +23,8 @@ import tokenMiddleware from '../middlewares/token.middleware'
  */
 export function routesLoader(app: Express) {
 
+console.log(path.join(__dirname, '../../images'))
+
   app.use('/api/auth', authRoute())
   app.use('/api/images', imagesRoute())
   app.use('/api/articles', articlesRoutes())

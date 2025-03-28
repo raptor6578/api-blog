@@ -27,7 +27,7 @@ export class ArticleController {
     if (req.files) { 
       const titleSlug = getSlug(title, { lang: 'fr' })
       await imageService.createOrResetFolder(`articles/${titleSlug}`)
-      imageNames = await imageService.saveImages(`articles/${titleSlug}`, req.files)
+      imageNames = await imageService.saveImages(`articles/${titleSlug}`, req.files, false)
     }
 
     await articleRepository.newArticle(title, content, author, {session: req.session, imageNames})

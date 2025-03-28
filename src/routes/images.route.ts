@@ -5,7 +5,8 @@ import imagesController from '../controllers/images.controller'
 function ImagesRoute() {
 
         const router = express.Router()
-        router.get('/:path/:width/:height/:imageName', imagesController.getImage)
+        router.use(express.static('images'))
+        //router.get('/:path/:width/:height/:imageName', imagesController.getImage)
         return router
 }
 
