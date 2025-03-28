@@ -1,5 +1,4 @@
-import express, { Express } from 'express'
-import path from 'path'
+import { Express } from 'express'
 import authRoute from '../routes/auth.route'
 import imagesRoute from '../routes/images.route'
 import articlesRoutes from '../routes/articles.route'
@@ -22,8 +21,6 @@ import tokenMiddleware from '../middlewares/token.middleware'
  * - '/api/likes' : Protected routes for liking articles and comments, requires token authentication.
  */
 export function routesLoader(app: Express) {
-
-console.log(path.join(__dirname, '../../images'))
 
   app.use('/api/auth', authRoute())
   app.use('/api/images', imagesRoute())
