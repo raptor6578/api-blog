@@ -6,7 +6,7 @@ import { Request, Response, NextFunction } from 'express'
  */
 const newArticleSchema = Joi.object({
     title: Joi.string().min(10).max(100).required(),
-    content: Joi.string().min(100).max(5000).required()
+    content: Joi.string().min(100).max(15000).required()
 })
 
 /**
