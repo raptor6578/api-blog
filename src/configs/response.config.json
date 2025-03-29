@@ -1,21 +1,47 @@
 {
-  "articles": {
-    "newArticle": {
-      "success": {
+  "article": {
+    "newAndUpdateArticle": {
+      "successNew": {
         "statusCode": 201,
-        "message": "Article created successfully."
+        "message": "Votre article a bien été envoyé, il est actuellement en attente de modération."
+      },
+      "successUpdate": {
+        "statusCode": 200,
+        "message": "Votre article a bien été modifié."
+      },
+      "notFound": {
+        "statusCode": 404,
+        "message": "Article not found." 
+      },
+      "titleEmpty": {
+        "statusCode": 400,
+        "message": "Vous devez saisir un titre pour votre article."
+      },
+      "titleMin": {
+        "statusCode": 400,
+        "message": "Le titre de votre article doit contenir au minimum 10 caractères."
+      },
+      "titleMax": {
+        "statusCode": 400,
+        "message": "Le titre de votre article doit contenir au maximum 70 caractères."
+      },
+      "contentEmpty": {
+        "statusCode": 400,
+        "message": "Vous devez saisir un contenu pour votre article."
+      },
+      "contentMin": {
+        "statusCode": 400,
+        "message": "Votre article doit contenir au minimum 100 caractères."
+      },
+      "contentMax": {
+        "statusCode": 400,
+        "message": "Votre article doit contenir au maximum 15000 caractères."
       }
     },
     "getArticleBySlug": {
       "notFound": {
         "statusCode": 404,
         "message": "Article not found."
-      }
-    },
-    "updateArticle": {
-      "notFound": {
-        "statusCode": 404,
-        "message": "Article not found." 
       }
     },
     "deleteArticle": {

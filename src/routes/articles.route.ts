@@ -38,6 +38,7 @@ export function ArticlesRoute() {
     )
     router.put('/:slug', 
         tokenMiddleware, 
+        imageCacheMiddleware(20),
         validateNewAndUpdateArticle, 
         articlesController.updateArticle
     )

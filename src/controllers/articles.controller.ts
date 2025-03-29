@@ -31,7 +31,7 @@ export class ArticleController {
     }
 
     await articleRepository.newArticle(title, content, author, {session: req.session, imageNames})
-    const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'newArticle', 'success')
+    const { statusCode, message } = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'successNew')
     res.status(statusCode).json({message})
   }
 
@@ -56,7 +56,7 @@ export class ArticleController {
     const { slug } = req.params
     const article = await articleRepository.getArticleBySlug(slug)
     if (!article) {
-      const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'getArticleBySlug', 'notFound')
+      const { statusCode, message } = responseService.getStatusCodeAndMessage('article', 'getArticleBySlug', 'notFound')
       res.status(statusCode).json({message})
       return
     }
@@ -64,22 +64,34 @@ export class ArticleController {
   }
 
   /**
-   * Updates an existing article identified by its slug. Extracts the new title and content of the article from the request body, and the author's ID from the authenticated user.
-   * @param req - The Express request object, which must include `title` and `content` in `req.body`, the `slug` in `req.params`, and the user's ID in `req.user!._id`.
+   * Updates an existing article identified by its slug. Extracts the title and content from the request body,
+   * and the author's ID from the authenticated user. If files are uploaded, they are processed by `imageService.saveImages`
+   * to save under a directory named after the article's slug.
+   * @param req - The Express request object, which must include the article's `slug` in `req.params`, 
+   * and the user's ID in `req.user!._id`. It may also include `files` as an array of image files (if images are uploaded).
    * @param res - The Express response object.
-   * @returns Sends the updated article or an error message if no article is found.
+   * @returns Sends a JSON response with a status of 200 and the updated article.
    */
   public async updateArticle(req: Request, res: Response): Promise<void> {
     const { slug } = req.params
     const { title, content } = req.body
     const author = req.user!._id 
+
+    let imageNames
+    if (req.files) { 
+      const titleSlug = getSlug(title, { lang: 'fr' })
+      await imageService.createOrResetFolder(`articles/${titleSlug}`)
+      imageNames = await imageService.saveImages(`articles/${titleSlug}`, req.files, false)
+    }
+
     const article = await articleRepository.findBySlugAndUpdate(slug, title, content, author, { session: req.session })
     if (!article) {
-      const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'updateArticle', 'notFound')
+      const { statusCode, message } = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'notFound')
       res.status(statusCode).json({message})
       return
     }
-    res.status(200).send(article)
+    const { statusCode, message } = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'successUpdate')
+    res.status(statusCode).json({message})
   }
 
   /**
@@ -93,12 +105,12 @@ export class ArticleController {
     const author = req.user!._id
     const article = await articleRepository.findBySlugAndDelete(slug, author, { session: req.session })
     if (!article) {
-      const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'deleteArticle', 'notFound')
+      const { statusCode, message } = responseService.getStatusCodeAndMessage('article', 'deleteArticle', 'notFound')
       res.status(statusCode).json({message})
       return
     }
     await imageService.deleteImages('articles', article.imageNames)
-    const { statusCode, message } = responseService.getStatusCodeAndMessage('articles', 'deleteArticle', 'success')
+    const { statusCode, message } = responseService.getStatusCodeAndMessage('article', 'deleteArticle', 'success')
     res.status(statusCode).json({message})
   }
 
