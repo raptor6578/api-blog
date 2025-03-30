@@ -61,6 +61,11 @@
         "statusCode": 409,
         "message": "L'adresse email utilisée est déjà associée à un compte."
       },
+      "usernameExists": {
+        "statusCode": 409,
+        "message": "Le nom d'utilisateur est déjà utilisé, veuillez en choisir un autre.",
+        "type": "username"
+      },
       "success": {
         "statusCode": 201,
         "message": "Votre inscription s'est déroulée avec success."
@@ -88,6 +93,26 @@
         "statusCode": 400,
         "message": "Une adresse email est requise.",
         "type": "email"
+      },
+      "emptyUsername": {
+        "statusCode": 400,
+        "message": "Un nom d'utilisateur est requis.",
+        "type": "username"
+      },
+      "minUsername": {
+        "statusCode": 400,
+        "message": "Votre nom d'utilisateur doit contenir au moins 3 caractères.",
+        "type": "username"
+      },
+      "maxUsername": {
+        "statusCode": 400,
+        "message": "Votre nom d'utilisateur doit contenir au maximum 20 caractères.",
+        "type": "username"
+      },
+      "invalidUsername": {
+        "statusCode": 400,
+        "message": "Votre nom d'utilisateur ne doit pas contenir de caractères spéciaux.",
+        "type": "username"
       },
       "minPassword": {
         "statusCode": 400,

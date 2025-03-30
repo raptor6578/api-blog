@@ -10,19 +10,22 @@ import imageService from '../services/image.service'
 export class AuthController {
 
     /**
-     * Registers a new user with an email, password, and optionally a profile image. It first checks if the email already exists
-     * in the database and returns an error if so. If the email is not found, it creates a new user account. If an image file is
-     * provided in `req.file`, the image is saved in the 'users' directory using the image service, and the image name is associated
-     * with the user account. The method handles the file upload using `multer`, expecting the file to be accessed via `req.file`.
-     * @param req - The Express request object, which must include `email` and `password` in `req.body`. The request may also include
-     * an uploaded image file accessible through `req.file`.
+     * Registers a new user. Validates the email and username to ensure they are not already taken.
+     * If the email or username exists, it returns an error message. If the registration is successful,
+     * it saves the user's image if provided, and returns a success message.
+     * @param req - The Express request object, which must include `email`, `username`, and `password` in `req.body`.
      * @param res - The Express response object.
-     * @returns A JSON response with a status of 201 indicating successful user creation. If the email already exists, it returns a status of 409.
+     * @returns A JSON response with a status of 200 and a success message if successful, or an error message if validation fails.
      */
     public async signUp(req: Request, res: Response): Promise<void> {
-        const { email, password } = req.body
+        const { email, username, password } = req.body
         if (await userRepository.doesEmailExist(email)) {
             const { statusCode, message } = responseService.getStatusCodeAndMessage('auth', 'signUp', 'emailExists')
+            res.status(statusCode).json({ message })
+            return
+        }
+        if (await userRepository.doesUsernameExist(username)) {
+            const { statusCode, message } = responseService.getStatusCodeAndMessage('auth', 'signUp', 'usernameExists')
             res.status(statusCode).json({ message })
             return
         }
@@ -30,17 +33,17 @@ export class AuthController {
         if (req.file) {
             imageName = await imageService.saveImage('users', req.file)
         }
-        await userRepository.newUser(email, password, imageName)
+        await userRepository.newUser(email, username, password, imageName)
         const { statusCode, message } = responseService.getStatusCodeAndMessage('auth', 'signUp', 'success')
         res.status(statusCode).json({ message })
     }
 
     /**
-     * Authenticates a user using email and password. Validates the user credentials and returns a JWT token
-     * if authentication is successful. Returns an error if the email or password does not match.
+     * Signs in a user by validating the provided email and password. If the email is not found or the password does not match,
+     * it returns an error message. If successful, it generates a JWT token for the user and returns it along with the user's information.
      * @param req - The Express request object, which must include `email` and `password` in `req.body`.
      * @param res - The Express response object.
-     * @returns A JSON response with a status of 200 and a JWT token if successful, or 401 if authentication fails.
+     * @returns A JSON response with a status of 200 and the user's token and information if successful, or an error message if validation fails.
      */
     public async signIn(req: Request, res: Response): Promise<void> {
         const { email, password } = req.body
@@ -55,8 +58,10 @@ export class AuthController {
             res.status(statusCode).json({ message, type })
             return
         }
+        const userResponse = user.toJSON()
+        delete userResponse.password
         const token = authService.getTokenByUser(user)
-        res.status(200).json({token})
+        res.status(200).json({token, user: userResponse})
     }
 
 }

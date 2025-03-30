@@ -1,6 +1,7 @@
-import { getModelForClass, prop, pre, modelOptions } from '@typegoose/typegoose'
+import { getModelForClass, prop, pre, modelOptions, Ref } from '@typegoose/typegoose'
 import mongoose, { Document } from 'mongoose'
 import bcrypt from 'bcrypt'
+import { ArticleSchema } from './article.model'
 
 /**
  * Class representing a user schema in the database.
@@ -31,6 +32,18 @@ class User extends Document {
    */
   @prop({ required: true, unique: true, index: true })
   public email!: string
+
+  /**
+   * The username, required and must be unique.
+   */
+  @prop({ required: true, unique: true, index: true })
+  public username!: string
+
+  /**
+   * An array of references to Article documents related to the User.
+   */
+  @prop({ ref: 'Article', default: [] })
+  public articles!: Ref<ArticleSchema>[]
 
   /**
    * Optional image name.
@@ -79,6 +92,7 @@ class User extends Document {
    */
   @prop({ default: false })
   public confirm?: boolean
+
 }
 
 const UserModel = getModelForClass(User)

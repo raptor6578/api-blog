@@ -4,6 +4,10 @@ import responseService from "../../services/response.service"
 
 const invalidEmail = responseService.getStatusCodeAndMessage('auth', 'validator', 'invalidEmail').message
 const emptyEmail = responseService.getStatusCodeAndMessage('auth', 'validator', 'emptyEmail').message
+const emptyUsername = responseService.getStatusCodeAndMessage('auth', 'validator', 'emptyUsername').message
+const minUsername = responseService.getStatusCodeAndMessage('auth', 'validator', 'minUsername').message
+const maxUsername = responseService.getStatusCodeAndMessage('auth', 'validator', 'maxUsername').message
+const invalidUsername = responseService.getStatusCodeAndMessage('auth', 'validator', 'invalidUsername').message
 const minPassword = responseService.getStatusCodeAndMessage('auth', 'validator', 'minPassword').message
 const emptyPassword = responseService.getStatusCodeAndMessage('auth', 'validator', 'emptyPassword').message
 
@@ -11,13 +15,22 @@ const email = Joi.string().email().required().messages({
     'string.email': invalidEmail,
     'string.empty':  emptyEmail,
   })
+
 const password = Joi.string().min(8).required().messages({
     'string.min': minPassword,
     'string.empty': emptyPassword
   })
 
+const username = Joi.string().min(3).max(20).pattern(/^[a-zA-Z0-9_.-]{3,20}$/).required().messages({
+    'string.min': minUsername,
+    'string.max': maxUsername,
+    'string.empty': emptyUsername,
+    'string.pattern.base': invalidUsername
+  })
+
 const signUpSchema = Joi.object({
     email: email,
+    username: username,
     password: password,
 })
 
