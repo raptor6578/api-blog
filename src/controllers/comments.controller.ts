@@ -8,12 +8,10 @@ import responseService from '../services/response.service'
 export class CommentsController {
 
   /**
-   * Adds a new comment to the system. Expects the comment details to be provided in the request body,
-   * including the type of content being commented on, the target ID of the content, the comment content,
-   * and optionally, a parent comment ID for nested comments.
-   * @param req - The Express request object, which must include `contentType`, `targetId`, `content`, and optionally `parentComment` in `req.body`.
+   * Retrieves comments based on the specified content type and target ID.
+   * @param req - The Express request object, which must include `contentType` and `targetId` in `req.body`.
    * @param res - The Express response object.
-   * @returns A JSON response with a status of 201 indicating successful comment creation or an error message.
+   * @returns Sends the retrieved comments or an error message if the target is not available.
    */
   public async addComment(req: Request, res: Response): Promise<void> {
     const author = req.user!._id 
@@ -32,9 +30,8 @@ export class CommentsController {
         return
       } 
     }
-    await commentRepository.addComment(author, contentType, targetId, content, {session: req.session, parentComment})
-    const { statusCode, message } = responseService.getStatusCodeAndMessage('comments', 'addComment', 'success')
-    res.status(statusCode).json({message})
+    const comment = await commentRepository.addComment(author, contentType, targetId, content, {session: req.session, parentComment})
+    res.status(201).json(comment)
   } 
 
   /**

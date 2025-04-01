@@ -9,12 +9,13 @@ import commentRepository from '../repositories/comment.repository'
  */
 export class LikeController {
 
+
   /**
-   * Adds a like to a specific content by a user. Checks if the user has already liked the content before,
-   * preventing duplicate likes. The content to be liked is identified by its `targetId`.
+   * Adds a like to a specific content (article or comment) by a user. The content is identified by its `targetId`.
+   * The user must not have already liked the content.
    * @param req - The Express request object, which must include `targetId`, `contentType`, and `value` in `req.body`.
    * @param res - The Express response object.
-   * @returns A JSON response with a status of 201 indicating that the like was successfully added or 409 if the like already exists.
+   * @returns A JSON response containing the newly created like or an error message.
    */
   public async addLike(req: Request, res: Response): Promise<void> {
     const voter = req.user!._id 
@@ -40,9 +41,8 @@ export class LikeController {
       res.status(statusCode).json({message})
       return
     }
-    await likeRepository.addLike(targetId, voter, contentType, value, { session: req.session })
-    const { statusCode, message } = responseService.getStatusCodeAndMessage('likes', 'addLike', 'success')
-    res.status(statusCode).json({message})
+    const like = await likeRepository.addLike(targetId, voter, contentType, value, { session: req.session })
+    res.status(201).json(like)
   }
 
   /**

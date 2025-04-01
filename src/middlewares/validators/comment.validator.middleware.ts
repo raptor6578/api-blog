@@ -8,7 +8,7 @@ import { ContentType } from '../../enums/contentType.enum'
  */
 const contentType = Joi.string().valid(...Object.values(ContentType)).required()
 const targetId = Joi.string().required()
-const content = Joi.string().min(1).max(250).required()
+const content = Joi.string().min(1).max(2000).required()
 const parentComment = Joi.string().allow('', null)
 
 const addCommentSchema = Joi.object({

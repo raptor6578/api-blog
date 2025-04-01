@@ -32,6 +32,7 @@ export class CommentRepository {
 
     const comment = new CommentModel({author, contentType, targetId, content})
     options.parentComment && (comment.parentComment = options.parentComment)
+    comment.populate('author')
     await comment.save({ session: options.session })
     if (contentType === 'Article') {
       await articleRepository.addCommentId(targetId, comment._id, options)
@@ -231,7 +232,9 @@ export class CommentRepository {
     targetId?: mongoose.Types.ObjectId, 
   ): Promise<boolean> {
 
-    const comment = await CommentModel.findOne({_id: id, targetId})
+    const comment = targetId 
+      ? await CommentModel.findOne({_id: id, targetId})
+      : await CommentModel.findOne({_id: id})
     return !!comment
   }
 

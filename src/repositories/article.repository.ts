@@ -3,6 +3,7 @@ import { ArticleModel, ArticleSchema } from '../models/article.model'
 import commentRepository from '../repositories/comment.repository'
 import likeRepository from './like.repository'
 import { ContentType } from '../enums/contentType.enum'
+import userRepository from './user.repository'
 
 /**
  * Repository class for managing articles. Provides functions for creating, updating, deleting,
@@ -30,6 +31,7 @@ export class ArticleRepository {
     const { imageNames, session } = options
     const article = new ArticleModel({ title, content, author, imageNames})
     await article.save({ session })
+    await userRepository.addArticleId(author, article._id, options)
     return article
   }
 
@@ -52,6 +54,7 @@ export class ArticleRepository {
     if (article) {
       await commentRepository.deleteAllCommentsByTargetId(article._id, 'Article' as ContentType, options)
       await likeRepository.deleteAllLikesByTargetId(article._id, 'Article' as ContentType, options)
+      await userRepository.deleteArticleId(author, article._id, options)
     }
     return article
   }
