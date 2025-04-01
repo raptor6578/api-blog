@@ -8,10 +8,12 @@ import responseService from '../services/response.service'
 export class CommentsController {
 
   /**
-   * Retrieves comments based on the specified content type and target ID.
-   * @param req - The Express request object, which must include `contentType` and `targetId` in `req.body`.
+   * Adds a new comment to the system. Expects the comment details to be provided in the request body,
+   * including the type of content being commented on, the target ID of the content, the comment content,
+   * and optionally, a parent comment ID for nested comments.
+   * @param req - The Express request object, which must include `contentType`, `targetId`, `content`, and optionally `parentComment` in `req.body`.
    * @param res - The Express response object.
-   * @returns Sends the retrieved comments or an error message if the target is not available.
+   * @returns Sends the comments or an error message if the content type is not valid.
    */
   public async addComment(req: Request, res: Response): Promise<void> {
     const author = req.user!._id 
