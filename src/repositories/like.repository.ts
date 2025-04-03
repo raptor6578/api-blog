@@ -31,7 +31,7 @@ export class LikeRepository {
   ): Promise<LikeSchema> {
 
     const like = new LikeModel({targetId, voter, contentType, value})
-    await like.save()
+    await like.save({ session: options.session })
     switch (contentType) {
       case 'Article':
         await articleRepository.addLikeId(targetId, like._id, options)
