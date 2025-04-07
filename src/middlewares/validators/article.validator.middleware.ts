@@ -7,7 +7,11 @@ import responseService from "../../services/response.service"
  */
 const titleEmpty = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'titleEmpty').message
 const titleMin = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'titleMin').message
-const titleMax = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'titleEmpty').message
+const titleMax = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'titleMax').message
+
+const descriptionEmpty = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'descriptionEmpty').message
+const descriptionMin = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'descriptionMin').message
+const descriptionMax = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'descriptionMax').message
 
 const contentEmpty = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'contentEmpty').message
 const contentMin = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'contentMin').message
@@ -17,12 +21,20 @@ const newArticleSchema = Joi.object({
     title: Joi.string().min(10).max(100).required().messages({
         'string.min': titleMin,
         'string.max': titleMax,
-        'string.empty': titleEmpty  
+        'string.empty': titleEmpty,
+        'any.required': titleEmpty
+    }),
+    description: Joi.string().min(20).max(150).required().messages({
+        'string.min': descriptionMin,
+        'string.max': descriptionMax,
+        'string.empty': descriptionEmpty,
+        'any.required': descriptionEmpty  
     }),
     content: Joi.string().min(100).max(15000).required().messages({
         'string.min': contentMin,
         'string.max': contentMax,
-        'string.empty': contentEmpty
+        'string.empty': contentEmpty,
+        'any.required': contentEmpty
     })
 })
 

@@ -14,17 +14,20 @@ const emptyPassword = responseService.getStatusCodeAndMessage('auth', 'validator
 const email = Joi.string().email().required().messages({
     'string.email': invalidEmail,
     'string.empty':  emptyEmail,
+    'any.required': emptyEmail
   })
 
 const password = Joi.string().min(8).required().messages({
     'string.min': minPassword,
-    'string.empty': emptyPassword
+    'string.empty': emptyPassword,
+    'any.required': emptyPassword
   })
 
 const username = Joi.string().min(3).max(20).pattern(/^[a-zA-Z0-9_.-]{3,20}$/).required().messages({
     'string.min': minUsername,
     'string.max': maxUsername,
     'string.empty': emptyUsername,
+    'any.required': emptyUsername,
     'string.pattern.base': invalidUsername
   })
 

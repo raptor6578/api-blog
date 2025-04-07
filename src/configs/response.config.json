@@ -25,6 +25,18 @@
         "statusCode": 400,
         "message": "Le titre de votre article doit contenir au maximum 70 caractères."
       },
+      "descriptionEmpty": {
+        "statusCode": 400,
+        "message": "Vous devez saisir une description pour votre article."
+      },
+      "descriptionMin": {
+        "statusCode": 400,
+        "message": "La description de votre article doit contenir au minimum 20 caractères."
+      },
+      "descriptionMax": {
+        "statusCode": 400,
+        "message": "La description de votre article doit contenir au maximum 150 caractères."
+      },
       "contentEmpty": {
         "statusCode": 400,
         "message": "Vous devez saisir un contenu pour votre article."

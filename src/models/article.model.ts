@@ -41,6 +41,12 @@ class Article extends Document {
   @prop({ required: true, unique: true })
   public title!: string
 
+    /**
+   * The title of the article, which is unique and required.
+   */
+    @prop({ required: true, unique: true })
+    public description!: string
+
   /**
    * The URL-friendly slug derived from the article title.
    * This field is unique and generated via pre-save middleware.

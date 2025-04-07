@@ -10,17 +10,15 @@ import getSlug from 'speakingurl'
 export class ArticleController {
 
   /**
-   * Creates a new article with an optional array of images. Extracts the title and content of the article from the request body,
-   * and the author's ID from the authenticated user. If files are uploaded and available in `req.files`, they are processed by 
-   * `imageService.saveImages` to save under the 'articles' directory, and the resulting image names are included in the article data.
-   * This method also supports transactional operations via `req.session`.
-   * @param req - The Express request object, which must include `title` and `content` in `req.body`, and the user's ID in `req.user!._id`.
-   * It may also include `files` as an array of image files (if images are uploaded), and `session` for database transaction context.
+   * Creates a new article. Extracts the title, description, and content from the request body,
+   * and the author's ID from the authenticated user. If files are uploaded, they are processed by `imageService.saveImages`
+   * to save under a directory named after the article's slug.
+   * @param req - The Express request object, which must include the user's ID in `req.user!._id`.
    * @param res - The Express response object.
-   * @returns Sends a JSON response with a status of 201 and a success message, indicating successful article creation.
+   * @returns Sends a JSON response with a status of 200 and a success message.
    */
   public async newArticle(req: Request, res: Response): Promise<void> {
-    const { title, content } = req.body
+    const { title, description, content } = req.body
     const author = req.user!._id
     let imageNames
 
@@ -30,7 +28,7 @@ export class ArticleController {
       imageNames = await imageService.saveImages(`articles/${titleSlug}`, req.files, false)
     }
 
-    await articleRepository.newArticle(title, content, author, {session: req.session, imageNames})
+    await articleRepository.newArticle(title, description, content, author, {session: req.session, imageNames})
     const { statusCode, message } = responseService.getStatusCodeAndMessage('article', 'newAndUpdateArticle', 'successNew')
     res.status(statusCode).json({message})
   }
