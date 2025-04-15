@@ -95,6 +95,7 @@ export class ArticleRepository {
    * Updates an article's title and content based on its slug and author.
    * @param slug - Slug of the article to update.
    * @param title - New title for the article.
+   * @param description - New description for the article.
    * @param content - New content for the article.
    * @param author - ObjectId of the author of the article.
    * @param options - Optional parameters for the operation.
@@ -104,6 +105,7 @@ export class ArticleRepository {
   public async findBySlugAndUpdate(
     slug: string, 
     title: string, 
+    description: string,
     content: string, 
     author: mongoose.Types.ObjectId,
     options: { session?: mongoose.ClientSession }
@@ -114,6 +116,7 @@ export class ArticleRepository {
       author 
     },{ 
       title, 
+      description,
       content 
     },{ 
       new: true, 
